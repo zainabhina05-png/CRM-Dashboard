@@ -25,7 +25,7 @@ const DashboardPage = () => {
       <div className="page__header">
         <div>
           <h1 className="page__title">
-            {greeting()}, <span>{user?.name?.split(' ')[0]}</span> 👋
+            {greeting()}, <span>{user?.name?.split(' ')[0]}</span>
           </h1>
           <p className="page__subtitle">Here's an overview of your lead pipeline</p>
         </div>
@@ -72,19 +72,19 @@ const DashboardPage = () => {
         <h2 className="section-title">Quick Actions</h2>
         <div className="quick-actions__grid">
           <Link to="/leads" className="quick-action-card glass-card" id="view-all-leads-card">
-            <span className="quick-action-card__icon">👥</span>
+            <span className="quick-action-card__icon">≡</span>
             <span>View All Leads</span>
           </Link>
           <Link to="/leads?new=true" className="quick-action-card glass-card" id="add-lead-card">
-            <span className="quick-action-card__icon">➕</span>
+            <span className="quick-action-card__icon">+</span>
             <span>Add New Lead</span>
           </Link>
           <Link to="/leads?status=Won" className="quick-action-card glass-card" id="won-leads-card">
-            <span className="quick-action-card__icon">🏆</span>
+            <span className="quick-action-card__icon">★</span>
             <span>Won Leads</span>
           </Link>
           <Link to="/leads?status=New" className="quick-action-card glass-card" id="new-leads-card">
-            <span className="quick-action-card__icon">🌱</span>
+            <span className="quick-action-card__icon">●</span>
             <span>New Leads</span>
           </Link>
         </div>

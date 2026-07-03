@@ -41,7 +41,6 @@ const RegisterPage = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-card__header">
-          <div className="auth-logo-wrap">⚡</div>
           <h1 className="auth-card__title">Create account</h1>
           <p className="auth-card__subtitle">Start managing your leads today</p>
         </div>

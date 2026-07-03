@@ -18,7 +18,7 @@ const LeadTable = ({ leads, onEdit, onDelete, onStatusChange, loading }) => {
   if (!leads.length) {
     return (
       <div className="empty-state">
-        <div className="empty-state__icon">📋</div>
+        <div className="empty-state__icon">◲</div>
         <h3>No leads found</h3>
         <p>Try adjusting your search or filter, or add a new lead.</p>
       </div>
@@ -69,14 +69,14 @@ const LeadTable = ({ leads, onEdit, onDelete, onStatusChange, loading }) => {
                   onClick={handleEdit(lead)}
                   aria-label={`Edit ${lead.name}`}
                 >
-                  ✏️
+                  ✎
                 </button>
                 <button
                   className="btn btn--sm btn--danger-ghost btn--icon"
                   onClick={handleDelete(lead._id)}
                   aria-label={`Delete ${lead.name}`}
                 >
-                  🗑️
+                  ✕
                 </button>
               </td>
             </tr>

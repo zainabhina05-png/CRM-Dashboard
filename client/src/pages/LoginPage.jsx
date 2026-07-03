@@ -33,7 +33,6 @@ const LoginPage = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-card__header">
-          <div className="auth-logo-wrap">⚡</div>
           <h1 className="auth-card__title">Welcome back</h1>
           <p className="auth-card__subtitle">Sign in to your LeadFlow account</p>
         </div>

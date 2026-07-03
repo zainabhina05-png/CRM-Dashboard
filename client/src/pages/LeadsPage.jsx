@@ -152,7 +152,7 @@ const LeadsPage = () => {
       {/* Toolbar */}
       <div className="leads-toolbar">
         <div className="search-box">
-          <span className="search-box__icon">🔍</span>
+          <span className="search-box__icon">⚲</span>
           <input
             id="lead-search-input"
             type="search"
