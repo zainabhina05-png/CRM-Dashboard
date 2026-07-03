@@ -12,6 +12,7 @@ const LeadsPage = () => {
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || 'All');
   const [page, setPage] = useState(1);
+
   // Open modal if ?new=true in URL, then immediately clean that param
   const [modalOpen, setModalOpen] = useState(() => {
     if (searchParams.get('new')) {
@@ -121,10 +122,12 @@ const LeadsPage = () => {
     try {
       await removeLead(deleteConfirm);
       setDeleteConfirm(null);
+      // Refresh list in case current page goes empty
+      fetchLeads({ page, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch, status: statusFilter });
     } catch {
       // error set in hook
     }
-  }, [deleteConfirm, removeLead]);
+  }, [deleteConfirm, removeLead, fetchLeads, page, debouncedSearch, statusFilter]);
 
   const allStatuses = ['All', ...LEAD_STATUSES];
 
@@ -156,7 +159,7 @@ const LeadsPage = () => {
             placeholder="Search by name or email…"
             value={search}
             onChange={handleSearchChange}
-            className="search-box__input"
+            className="search-box__input glass-card"
             aria-label="Search leads"
           />
           {search && (
@@ -187,7 +190,7 @@ const LeadsPage = () => {
 
       {error && (
         <div className="alert alert--error" role="alert">
-          {error}
+          <span>{error}</span>
           <button className="alert__close" onClick={clearError} aria-label="Dismiss">✕</button>
         </div>
       )}
