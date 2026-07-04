@@ -17,10 +17,12 @@ dotenv.config();
 // Connect to database
 connectDB();
 
-// Start the reminder scheduler after a brief delay to ensure DB is ready
-setTimeout(() => {
-  reminderScheduler.start();
-}, 2000);
+// Start the reminder scheduler after a brief delay to ensure DB is ready (SKIP on Vercel)
+if (!process.env.VERCEL) {
+  setTimeout(() => {
+    reminderScheduler.start();
+  }, 2000);
+}
 
 const app = express();
 
@@ -123,7 +125,7 @@ app.get('/api/health', (_req, res) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
   app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
   });

@@ -96,19 +96,19 @@ project/
 
 ---
 
-### Step 2 — Deploy Backend on Render
+### Step 2 — Deploy Backend on Vercel (Serverless)
 
-1. Go to [render.com](https://render.com) → **New → Web Service**
-2. Connect your GitHub repo (`CRM-Dashboard`)
-3. Configure:
+1. Go to [vercel.com](https://vercel.com) → **Add New → Project** → import your GitHub repo
+2. Configure:
 
    | Setting | Value |
    |---|---|
+   | **Framework** | `Other` |
    | **Root directory** | `server` |
-   | **Build command** | `npm install` |
-   | **Start command** | `npm start` |
+   | **Build command** | (leave empty) |
+   | **Output directory** | (leave empty) |
 
-4. Under the **Environment** tab, add:
+3. Add environment variables:
 
    | Variable | Value |
    |---|---|
@@ -116,10 +116,12 @@ project/
    | `JWT_SECRET` | A long random string — generate with `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` |
    | `JWT_REFRESH_SECRET` | A **different** long random string |
    | `NODE_ENV` | `production` |
-   | `CLIENT_ORIGIN` | `https://your-app.vercel.app` — set after Step 3 |
+   | `CLIENT_ORIGIN` | Your frontend Vercel URL — set after Step 3 |
    | `PORT` | `5000` |
 
-5. Click **Deploy** → note your URL e.g. `https://leadflow-api.onrender.com`
+4. Click **Deploy** → note your URL e.g. `https://leadflow-api.vercel.app`
+
+> **Note:** The backend uses Vercel's serverless functions. The automated reminder scheduler (background email sending) won't run continuously since serverless functions spin down when idle. This is expected for a portfolio project — the core API, login, registration, and lead management work perfectly 24/7.
 
 ---
 
@@ -139,28 +141,28 @@ project/
 
    | Variable | Value |
    |---|---|
-   | `VITE_API_BASE_URL` | `https://leadflow-api.onrender.com/api` |
+   | `VITE_API_BASE_URL` | `https://leadflow-api.vercel.app/api` |
 
 4. Deploy → get URL like `https://leadflow-crm.vercel.app`
 
 ---
 
-### Step 4 — Wire CORS (Back on Render)
+### Step 4 — Wire CORS (Back on Vercel)
 
-In Render → **Environment** tab → update:
+In your Vercel backend project → **Settings → Environment Variables** → update:
 
 ```
 CLIENT_ORIGIN=https://leadflow-crm.vercel.app
 ```
 
-Click **Save Changes** → Render auto-redeploys. Your frontend now talks to the API.
+Redeploy. Your frontend now talks to the API.
 
 ---
 
 ### Step 5 — Verify
 
 - Open your Vercel URL → register a user → log in → create a lead
-- Check Render logs for errors
+- Check Vercel dashboard logs for errors
 - Check MongoDB Atlas → **Collections** → data should appear
 
 ---
