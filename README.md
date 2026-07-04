@@ -105,7 +105,7 @@ Tests use a dedicated `leadflow_test` database and clean up after each run.
 
 ## Deployment
 
-### Option A — Split Deployment (Recommended)
+### — Split Deployment (Recommended)
 
 **Frontend → Vercel** · **Backend → Render (or Railway)**
 
@@ -148,33 +148,7 @@ CLIENT_ORIGIN=https://your-app.vercel.app
 2. Under **Network Access**, add `0.0.0.0/0` (allow all) or add Render's static outbound IPs
 3. Copy the connection string (SRV format) into `MONGO_URI`
 
----
 
-### Option B — Fullstack on Vercel (Serverless)
-
-The `vercel.json` at the repo root wraps the Express app as a serverless function.
-
-> ⚠️ **Limitation:** The reminder scheduler (`setInterval`) will not persist between cold starts. Use a Vercel Cron Job or an external cron service (EasyCron, Cronhooks) to call `GET /api/reminders/summary` or a dedicated scheduler endpoint instead.
-
-1. Import repo on Vercel (select root as project root)
-2. Add **all** server environment variables in Vercel Project Settings → Environment Variables
-3. Deploy — Vercel auto-detects `vercel.json`
-
----
-
-### Option C — Frontend on Netlify + Backend on Render
-
-The `netlify.toml` is pre-configured for the client build.
-
-1. Deploy backend to Render (same as Option A, Step 1)
-2. Import `client` folder on Netlify
-3. In `netlify.toml`, replace the redirect target:
-   ```toml
-   to = "https://your-render-service.onrender.com/api/:splat"
-   ```
-4. Add `VITE_API_BASE_URL` in Netlify Site Settings → Environment Variables
-
----
 
 ## Logging
 
@@ -240,6 +214,5 @@ project/
 │   ├── utils/               logger, emailService, reminderScheduler, duplicateDetection
 │   └── server.js
 │
-├── vercel.json              Fullstack Vercel config (Option B)
-└── netlify.toml             Netlify frontend config (Option C)
+├── vercel.json              Fullstack Vercel config 
 ```
