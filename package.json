@@ -1,0 +1,11 @@
+{
+  "name": "leadflow",
+  "version": "1.0.0",
+  "description": "LeadFlow — MERN Stack Lead Management CRM",
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "dev": "start npm run server & npm run client"
+  },
+  "private": true
+}
