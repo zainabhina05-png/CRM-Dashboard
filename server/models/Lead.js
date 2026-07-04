@@ -1,5 +1,43 @@
 const mongoose = require('mongoose');
 
+const activitySchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      enum: ['note', 'call', 'email', 'meeting', 'status_change', 'created'],
+      required: true,
+    },
+    content: {
+      type: String,
+      trim: true,
+      maxlength: [1000, 'Activity content cannot exceed 1000 characters'],
+      default: '',
+    },
+    metadata: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+  },
+  { timestamps: true }
+);
+
+const customFieldSchema = new mongoose.Schema(
+  {
+    key: { type: String, required: true, trim: true, maxlength: 50 },
+    value: { type: String, trim: true, maxlength: 200, default: '' },
+  },
+  { _id: false }
+);
+
+const LEAD_STATUSES = ['New', 'Contacted', 'Qualified', 'Proposal', 'Won', 'Lost'];
+
+const LEAD_SOURCES = ['website', 'referral', 'social_media', 'paid_ads', 'cold_call', 'other'];
+
 const leadSchema = new mongoose.Schema(
   {
     name: {
@@ -11,7 +49,6 @@ const leadSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, 'Email is required'],
-      // NOTE: NOT globally unique — uniqueness is enforced per-owner via compound index below
       trim: true,
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
@@ -28,14 +65,39 @@ const leadSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['New', 'Contacted', 'Qualified', 'Lost', 'Won'],
+      enum: LEAD_STATUSES,
       default: 'New',
+    },
+    source: {
+      type: String,
+      enum: LEAD_SOURCES,
+      default: 'other',
+    },
+    tags: {
+      type: [String],
+      default: [],
+      validate: {
+        validator: (tags) => tags.length <= 20,
+        message: 'A lead cannot have more than 20 tags',
+      },
+    },
+    customFields: {
+      type: [customFieldSchema],
+      default: [],
+      validate: {
+        validator: (fields) => fields.length <= 10,
+        message: 'A lead cannot have more than 10 custom fields',
+      },
     },
     notes: {
       type: String,
       trim: true,
       maxlength: [500, 'Notes cannot exceed 500 characters'],
       default: '',
+    },
+    activities: {
+      type: [activitySchema],
+      default: [],
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -48,12 +110,13 @@ const leadSchema = new mongoose.Schema(
   }
 );
 
-// Compound unique index: one email per owner (not globally unique)
-// This allows different users to have leads with the same email
 leadSchema.index({ owner: 1, email: 1 }, { unique: true });
-
-// Indexes for fast filtering and full-text search
 leadSchema.index({ owner: 1, status: 1 });
-leadSchema.index({ name: 'text', email: 'text' });
+leadSchema.index({ owner: 1, phone: 1 });
+leadSchema.index({ owner: 1, tags: 1 });
+leadSchema.index({ name: 'text', email: 'text', company: 'text' });
+
+leadSchema.statics.LEAD_STATUSES = LEAD_STATUSES;
+leadSchema.statics.LEAD_SOURCES = LEAD_SOURCES;
 
 module.exports = mongoose.model('Lead', leadSchema);
