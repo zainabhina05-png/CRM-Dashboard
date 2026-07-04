@@ -49,8 +49,8 @@ const logger = createLogger({
   ],
 });
 
-// In production, also write to rotating log files
-if (env === 'production') {
+// In production, also write to rotating log files (SKIP on Vercel serverless)
+if (env === 'production' && !process.env.VERCEL) {
   logger.add(
     new transports.File({
       filename: path.join(LOG_DIR, 'error.log'),
