@@ -42,8 +42,6 @@ if (!process.env.VERCEL) {
   }, 2000);
 }
 
-const app = express();
-
 // --- Security & utility middleware ---
 app.use(helmet());
 
