@@ -14,8 +14,26 @@ const logger = require('./utils/logger');
 // Load env vars
 dotenv.config();
 
-// Connect to database
-connectDB();
+const app = express();
+
+// Connect to database (async - don't block on startup in serverless)
+if (process.env.VERCEL) {
+  // Lazy connection for serverless - connect on first request
+  app.use(async (req, res, next) => {
+    if (!req.dbConnected) {
+      try {
+        await connectDB();
+        req.dbConnected = true;
+      } catch (error) {
+        logger.error('DB connection middleware failed:', error);
+      }
+    }
+    next();
+  });
+} else {
+  // Traditional server - connect immediately
+  connectDB();
+}
 
 // Start the reminder scheduler after a brief delay to ensure DB is ready (SKIP on Vercel)
 if (!process.env.VERCEL) {
