@@ -3,10 +3,10 @@
 <h1>LeadFlow CRM</h1>
 
 **A full-stack MERN CRM for modern lead pipeline management**  
-Built by **@zainabhina05-png** &nbsp;·&nbsp; Deployed on **Vercel** (frontend) &amp; **Render** (backend)
+Built by **@zainabhina05-png** &nbsp;·&nbsp; Deployed on **Vercel**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://leadflow-crm.vercel.app)
-[![API](https://img.shields.io/badge/Backend_API-Render-46E3B7?style=for-the-badge&logo=render)](https://leadflow-api.onrender.com)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://client-cyan-rho.vercel.app)
+[![API](https://img.shields.io/badge/Backend_API-Vercel-000000?style=for-the-badge&logo=vercel)](https://crm-dashboard-seven-mu.vercel.app)
 [![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-43_Passing-22c55e?style=for-the-badge&logo=jest)](server/__tests__)
 
@@ -45,6 +45,7 @@ Frontend   React 19 · Vite 6 · React Router 7 · Axios · @dnd-kit · Recharts
 Backend    Node.js · Express 4 · MongoDB (Mongoose 8) · JWT · bcryptjs · Nodemailer
 Security   Helmet · CORS · express-rate-limit · cookie-parser · express-validator · HMAC
 Testing    Jest 29 · Supertest · Nodemon · Winston · Morgan
+Hosting    Vercel (frontend + backend) · MongoDB Atlas (database) — 100% free!
 ```
 
 ---
@@ -53,7 +54,7 @@ Testing    Jest 29 · Supertest · Nodemon · Winston · Morgan
 
 ```
 project/
-├── client/                    React + Vite frontend (deploy on Vercel)
+├── client/                    React + Vite frontend (Vercel)
 │   ├── src/
 │   │   ├── components/        Shared UI components (Kanban, LeadTable, etc.)
 │   │   ├── context/           AuthContext, ToastContext
@@ -63,107 +64,108 @@ project/
 │   ├── .env.example           ← copy to .env and fill in
 │   └── vite.config.js
 │
-├── server/                    Express + MongoDB backend (deploy on Render)
+├── server/                    Express + MongoDB backend (Vercel Serverless)
 │   ├── __tests__/             43 Jest + Supertest tests
-│   ├── config/                db.js
+│   ├── config/                db.js (MongoDB connection with caching)
 │   ├── middleware/            auth, authorize, errorHandler, validators
 │   ├── models/                User, Lead, Reminder
 │   ├── routes/                auth, leads, reminders, webhooks
 │   ├── utils/                 logger, emailService, reminderScheduler, duplicateDetection
 │   ├── .env.example           ← copy to .env — never commit .env
-│   └── server.js
+│   ├── server.js              Main Express app
+│   └── vercel.json            Vercel serverless config
 │
-├── vercel.json                Fullstack Vercel config (serverless option)
-└── netlify.toml               Netlify frontend config (alternative)
+└── README.md
 ```
 
 ---
 
 ## Deployment Guide
 
-> **Recommended:** Split deployment — Vercel (frontend) + Render (backend) + MongoDB Atlas (database)
+> **100% Free Hosting:** Both frontend and backend deployed on Vercel with MongoDB Atlas — no credit card required!
 
 ### Step 1 — MongoDB Atlas
 
 1. Go to [cloud.mongodb.com](https://cloud.mongodb.com) → create a **free M0 cluster**
 2. **Database Access** → create a user with username + password
-3. **Network Access** → Add `0.0.0.0/0` (allow all IPs, or add Render's static IPs later)
+3. **Network Access** → Add `0.0.0.0/0` (allow all IPs)
 4. Click **Connect** → **Drivers** → copy the connection string:
    ```
    mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/leadflow?retryWrites=true&w=majority
    ```
-5. Save this — you'll paste it as `MONGO_URI` in Render.
+5. Save this securely — you'll need it for Step 2
 
 ---
 
-### Step 2 — Deploy Backend on Vercel (Serverless)
+### Step 2 — Deploy Backend on Vercel
 
 1. Go to [vercel.com](https://vercel.com) → **Add New → Project** → import your GitHub repo
 2. Configure:
 
    | Setting | Value |
    |---|---|
-   | **Framework** | `Other` |
-   | **Root directory** | `server` |
-   | **Build command** | (leave empty) |
-   | **Output directory** | (leave empty) |
+   | **Framework Preset** | `Other` |
+   | **Root Directory** | `server` |
+   | **Build Command** | (leave empty) |
+   | **Output Directory** | (leave empty) |
 
-3. Add environment variables:
+3. Add environment variables in **Settings → Environment Variables**:
 
-   | Variable | Value |
-   |---|---|
-   | `MONGO_URI` | `mongodb+srv://...` (from Step 1) |
-   | `JWT_SECRET` | A long random string — generate with `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` |
-   | `JWT_REFRESH_SECRET` | A **different** long random string |
-   | `NODE_ENV` | `production` |
-   | `CLIENT_ORIGIN` | Your frontend Vercel URL — set after Step 3 |
-   | `PORT` | `5000` |
+   | Variable | Example Value | Notes |
+   |---|---|---|
+   | `MONGO_URI` | `mongodb+srv://user:****@cluster.mongodb.net/leadflow` | From Step 1 (keep secret!) |
+   | `JWT_SECRET` | `a1b2c3d4...` | Generate with: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` |
+   | `JWT_REFRESH_SECRET` | `e5f6g7h8...` | Generate a different random string |
+   | `NODE_ENV` | `production` | |
+   | `CLIENT_ORIGIN` | (leave empty for now) | Set after Step 3 |
 
-4. Click **Deploy** → note your URL e.g. `https://leadflow-api.vercel.app`
-
-> **Note:** The backend uses Vercel's serverless functions. The automated reminder scheduler (background email sending) won't run continuously since serverless functions spin down when idle. This is expected for a portfolio project — the core API, login, registration, and lead management work perfectly 24/7.
+4. Click **Deploy** → save your backend URL (e.g., `https://your-backend.vercel.app`)
 
 ---
 
 ### Step 3 — Deploy Frontend on Vercel
 
-1. Go to [vercel.com](https://vercel.com) → **Add New → Project** → import `CRM-Dashboard`
+1. Go to [vercel.com](https://vercel.com) → **Add New → Project** → import the same repo again
 2. Configure:
 
    | Setting | Value |
    |---|---|
-   | **Framework** | `Vite` |
-   | **Root directory** | `client` |
-   | **Build command** | `npm run build` |
-   | **Output directory** | `dist` |
+   | **Framework Preset** | `Vite` |
+   | **Root Directory** | `client` |
+   | **Build Command** | `npm run build` |
+   | **Output Directory** | `dist` |
 
 3. Add environment variable:
 
    | Variable | Value |
    |---|---|
-   | `VITE_API_BASE_URL` | `https://leadflow-api.vercel.app/api` |
+   | `VITE_API_BASE_URL` | `https://your-backend.vercel.app/api` (from Step 2) |
 
-4. Deploy → get URL like `https://leadflow-crm.vercel.app`
-
----
-
-### Step 4 — Wire CORS (Back on Vercel)
-
-In your Vercel backend project → **Settings → Environment Variables** → update:
-
-```
-CLIENT_ORIGIN=https://leadflow-crm.vercel.app
-```
-
-Redeploy. Your frontend now talks to the API.
+4. Click **Deploy** → save your frontend URL (e.g., `https://your-frontend.vercel.app`)
 
 ---
 
-### Step 5 — Verify
+### Step 4 — Connect Frontend & Backend (CORS)
 
-- Open your Vercel URL → register a user → log in → create a lead
-- Check Vercel dashboard logs for errors
-- Check MongoDB Atlas → **Collections** → data should appear
+Go back to your **backend** Vercel project:
+
+1. **Settings → Environment Variables**
+2. Update `CLIENT_ORIGIN` to your frontend URL:
+   ```
+   CLIENT_ORIGIN = https://your-frontend.vercel.app
+   ```
+3. **Deployments → Redeploy** (click ⋯ menu on latest deployment → Redeploy)
+
+---
+
+### Step 5 — Verify Everything Works
+
+1. Open your frontend URL
+2. **Register** a new user account
+3. **Log in** and create a test lead
+4. Check **MongoDB Atlas → Browse Collections** — you should see your data
+
+🎉 Your CRM is now live and 100% free!
 
 ---
 
@@ -254,7 +256,21 @@ Tests use a dedicated `leadflow_test` database and clean up after each run.
 
 | Variable | Required | Description |
 |---|---|---|
-| `VITE_API_BASE_URL` | Yes | Full backend URL e.g. `https://leadflow-api.onrender.com/api` |
+| `VITE_API_BASE_URL` | Yes | Full backend URL e.g. `https://your-backend.vercel.app/api` |
+
+---
+
+## Important Notes
+
+### Serverless Backend Limitations
+
+Since the backend runs on Vercel's serverless functions:
+
+- ✅ **Core API works perfectly 24/7** — login, registration, leads CRUD, analytics
+- ⚠️ **Reminder scheduler doesn't run continuously** — serverless functions spin down when idle
+- 💡 **For production:** Use Vercel Cron Jobs or external services (EasyCron) to trigger reminder checks
+
+This is the standard tradeoff for free serverless hosting and doesn't impact the portfolio demo experience.
 
 ---
 
@@ -292,30 +308,25 @@ const sig = 'sha256=' + crypto.createHmac('sha256', WEBHOOK_SECRET).update(body)
 ## Alternative Deployment Options
 
 <details>
-<summary><b>Option B — Fullstack on Vercel (Serverless)</b></summary>
+<summary><b>Option B — Backend on Render (Traditional Server)</b></summary>
 
-The `vercel.json` at the repo root wraps Express as a serverless function.
+If you need the reminder scheduler to run continuously:
 
-> **Limitation:** The reminder scheduler (`setInterval`) will not persist between cold starts. Use a Vercel Cron Job or an external cron service (EasyCron, Cronhooks) to trigger reminders instead.
-
-1. Import repo on Vercel (select **root** as project root)
-2. Add all server environment variables in Vercel Project Settings → Environment Variables
-3. Deploy — Vercel auto-detects `vercel.json`
+1. Deploy backend to [Render](https://render.com) as a Web Service
+2. Set **Root Directory** to `server`, **Build Command** to `npm install`, **Start Command** to `npm start`
+3. Add all environment variables from Step 2
+4. Update frontend's `VITE_API_BASE_URL` to your Render URL
 
 </details>
 
 <details>
-<summary><b>Option C — Frontend on Netlify + Backend on Render</b></summary>
+<summary><b>Option C — Frontend on Netlify</b></summary>
 
 The `netlify.toml` is pre-configured for the client build.
 
-1. Deploy backend to Render (same as Step 2)
+1. Deploy backend (Vercel or Render)
 2. Import `client` folder on Netlify
-3. In `netlify.toml`, replace the redirect target:
-   ```toml
-   to = "https://your-render-service.onrender.com/api/:splat"
-   ```
-4. Add `VITE_API_BASE_URL` in Netlify Site Settings → Environment Variables
+3. Add `VITE_API_BASE_URL` in Site Settings → Environment Variables
 
 </details>
 
