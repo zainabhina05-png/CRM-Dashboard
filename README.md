@@ -1,14 +1,12 @@
 <div align="center">
 
-<h1>
-  <img src="https://img.shields.io/badge/LeadFlow-CRM-6366f1?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyek0xMiA1YzEuNjYgMCAzIDEuMzQgMyAzcy0xLjM0IDMtMyAzLTMtMS4zNC0zLTMgMS4zNC0zIDMtM3ptMCAxNC4yYy0yLjUgMC00LjcxLTEuMjgtNi0zLjIyLjAzLTEuOTkgNC0zLjA4IDYtMy4wOCAxLjk5IDAgNS45NyAxLjA5IDYgMy4wOC0xLjI5IDEuOTQtMy41IDMuMjItNiAzLjIyeiIvPjwvc3ZnPg==&logoColor=white" alt="LeadFlow CRM" />
-</h1>
+<h1>LeadFlow CRM</h1>
 
 **A full-stack MERN CRM for modern lead pipeline management**  
-Built by **@zainabhina05-png** · Deployed on **Vercel** (frontend) & **Render** (backend)
+Built by **@zainabhina05-png** &nbsp;·&nbsp; Deployed on **Vercel** (frontend) &amp; **Render** (backend)
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://leadflow-crm.vercel.app)
-[![API](https://img.shields.io/badge/⚡_Backend_API-Render-46E3B7?style=for-the-badge&logo=render)](https://leadflow-api.onrender.com)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://leadflow-crm.vercel.app)
+[![API](https://img.shields.io/badge/Backend_API-Render-46E3B7?style=for-the-badge&logo=render)](https://leadflow-api.onrender.com)
 [![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-43_Passing-22c55e?style=for-the-badge&logo=jest)](server/__tests__)
 
@@ -16,31 +14,31 @@ Built by **@zainabhina05-png** · Deployed on **Vercel** (frontend) & **Render**
 
 ---
 
-## ✨ What is LeadFlow?
+## What is LeadFlow?
 
 LeadFlow is a production-ready **Customer Relationship Management (CRM)** platform I designed and built from scratch. It features a stunning **Solar Ocean glassmorphism UI**, a drag-and-drop Kanban pipeline, real-time analytics, automated reminders, and enterprise-grade security — all in a monorepo you can deploy in under 15 minutes.
 
-> This project was built entirely by me — from architecture decisions to UI polish — as a showcase of full-stack engineering with React, Node.js, MongoDB, and modern DevOps.
+> **Built entirely by me** — from architecture decisions to UI polish — as a showcase of full-stack engineering with React, Node.js, MongoDB, and modern DevOps.
 
 ---
 
-## 🎯 Feature Highlights
+## Feature Highlights
 
 | Area | Details |
 |---|---|
-| 🔐 **Auth & Security** | JWT access tokens (15 min) + httpOnly refresh tokens (7 days), rotation & reuse detection, RBAC (Admin / Manager / Sales Rep), rate-limited auth routes |
-| 📋 **Lead Management** | Full CRUD, tags, custom fields, activity timeline, duplicate detection & merge, lead source tracking |
-| 🗂 **Kanban Pipeline** | Drag-and-drop board powered by `@dnd-kit` with live stage transitions |
-| 📊 **Analytics Dashboard** | Per-status KPIs, pipeline funnel, source donut, win/loss donut, 12-month trend line (Recharts) |
-| 📤 **CSV Export** | Filtered lead exports for Admin & Manager roles |
-| 🔔 **Reminders** | Per-lead follow-up tasks with due dates, in-app notification bell, email alerts via Nodemailer |
-| 🔗 **Webhooks** | Inbound `POST /api/webhooks/leads` for Facebook Lead Ads / Zapier with HMAC-SHA256 verification |
-| 📝 **Logging** | Structured Winston logs (colourised dev, JSON files in prod), HTTP via Morgan |
-| ✅ **Tests** | 43 Jest + Supertest tests covering auth, leads CRUD, RBAC, and utilities |
+| **Auth & Security** | JWT access tokens (15 min) + httpOnly refresh tokens (7 days), rotation & reuse detection, RBAC (Admin / Manager / Sales Rep), rate-limited auth routes |
+| **Lead Management** | Full CRUD, tags, custom fields, activity timeline, duplicate detection & merge, lead source tracking |
+| **Kanban Pipeline** | Drag-and-drop board powered by `@dnd-kit` with live stage transitions |
+| **Analytics Dashboard** | Per-status KPIs, pipeline funnel, source donut, win/loss donut, 12-month trend line (Recharts) |
+| **CSV Export** | Filtered lead exports for Admin & Manager roles |
+| **Reminders** | Per-lead follow-up tasks with due dates, in-app notification bell, email alerts via Nodemailer |
+| **Webhooks** | Inbound `POST /api/webhooks/leads` for Facebook Lead Ads / Zapier with HMAC-SHA256 verification |
+| **Logging** | Structured Winston logs (colourised dev, JSON files in prod), HTTP via Morgan |
+| **Tests** | 43 Jest + Supertest tests covering auth, leads CRUD, RBAC, and utilities |
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ```
 Frontend   React 19 · Vite 6 · React Router 7 · Axios · @dnd-kit · Recharts · Vanilla CSS
@@ -51,11 +49,11 @@ Testing    Jest 29 · Supertest · Nodemon · Winston · Morgan
 
 ---
 
-## 🗂 Project Structure
+## Project Structure
 
 ```
 project/
-├── client/                    React + Vite frontend (→ deploy on Vercel)
+├── client/                    React + Vite frontend (deploy on Vercel)
 │   ├── src/
 │   │   ├── components/        Shared UI components (Kanban, LeadTable, etc.)
 │   │   ├── context/           AuthContext, ToastContext
@@ -65,14 +63,14 @@ project/
 │   ├── .env.example           ← copy to .env and fill in
 │   └── vite.config.js
 │
-├── server/                    Express + MongoDB backend (→ deploy on Render)
+├── server/                    Express + MongoDB backend (deploy on Render)
 │   ├── __tests__/             43 Jest + Supertest tests
 │   ├── config/                db.js
 │   ├── middleware/            auth, authorize, errorHandler, validators
 │   ├── models/                User, Lead, Reminder
 │   ├── routes/                auth, leads, reminders, webhooks
 │   ├── utils/                 logger, emailService, reminderScheduler, duplicateDetection
-│   ├── .env.example           ← copy to .env and fill in  ⚠️ Never commit .env
+│   ├── .env.example           ← copy to .env — never commit .env
 │   └── server.js
 │
 ├── vercel.json                Fullstack Vercel config (serverless option)
@@ -81,16 +79,16 @@ project/
 
 ---
 
-## 🚀 Deployment Guide
+## Deployment Guide
 
 > **Recommended:** Split deployment — Vercel (frontend) + Render (backend) + MongoDB Atlas (database)
 
 ### Step 1 — MongoDB Atlas
 
 1. Go to [cloud.mongodb.com](https://cloud.mongodb.com) → create a **free M0 cluster**
-2. **Database Access** → create a user with username/password
+2. **Database Access** → create a user with username + password
 3. **Network Access** → Add `0.0.0.0/0` (allow all IPs, or add Render's static IPs later)
-4. Click **Connect** → **Drivers** → copy your connection string:
+4. Click **Connect** → **Drivers** → copy the connection string:
    ```
    mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/leadflow?retryWrites=true&w=majority
    ```
@@ -102,7 +100,7 @@ project/
 
 1. Go to [render.com](https://render.com) → **New → Web Service**
 2. Connect your GitHub repo (`CRM-Dashboard`)
-3. Configure the service:
+3. Configure:
 
    | Setting | Value |
    |---|---|
@@ -110,24 +108,18 @@ project/
    | **Build command** | `npm install` |
    | **Start command** | `npm start` |
 
-4. Under the **Environment** tab, add these variables:
+4. Under the **Environment** tab, add:
 
    | Variable | Value |
    |---|---|
    | `MONGO_URI` | `mongodb+srv://...` (from Step 1) |
-   | `JWT_SECRET` | A long random string (e.g. generate with `openssl rand -hex 64`) |
+   | `JWT_SECRET` | A long random string — generate with `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` |
    | `JWT_REFRESH_SECRET` | A **different** long random string |
    | `NODE_ENV` | `production` |
-   | `CLIENT_ORIGIN` | `https://your-app.vercel.app` ← set after Step 3 |
+   | `CLIENT_ORIGIN` | `https://your-app.vercel.app` — set after Step 3 |
    | `PORT` | `5000` |
 
-5. Click **Deploy** → wait for it to go live.
-6. Note your backend URL, e.g. `https://leadflow-api.onrender.com`
-
-> 💡 **Generate strong secrets** (run locally):
-> ```bash
-> node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-> ```
+5. Click **Deploy** → note your URL e.g. `https://leadflow-api.onrender.com`
 
 ---
 
@@ -143,93 +135,89 @@ project/
    | **Build command** | `npm run build` |
    | **Output directory** | `dist` |
 
-3. Under **Environment Variables**, add:
+3. Add environment variable:
 
    | Variable | Value |
    |---|---|
    | `VITE_API_BASE_URL` | `https://leadflow-api.onrender.com/api` |
 
-4. Click **Deploy** → you get a URL like `https://leadflow-crm.vercel.app`
+4. Deploy → get URL like `https://leadflow-crm.vercel.app`
 
 ---
 
 ### Step 4 — Wire CORS (Back on Render)
 
-1. Go to your Render service → **Environment** tab
-2. Update (or add) the `CLIENT_ORIGIN` variable:
-   ```
-   CLIENT_ORIGIN=https://leadflow-crm.vercel.app
-   ```
-3. Click **Save Changes** → Render will automatically redeploy.
+In Render → **Environment** tab → update:
 
-✅ Your frontend on Vercel will now talk to the API on Render!
+```
+CLIENT_ORIGIN=https://leadflow-crm.vercel.app
+```
+
+Click **Save Changes** → Render auto-redeploys. Your frontend now talks to the API.
 
 ---
 
 ### Step 5 — Verify
 
 - Open your Vercel URL → register a user → log in → create a lead
-- Check Render logs for any errors
-- Check MongoDB Atlas → **Collections** → you should see data
+- Check Render logs for errors
+- Check MongoDB Atlas → **Collections** → data should appear
 
 ---
 
-## 💻 Local Development
+## Local Development
 
 ### Prerequisites
 
 - Node.js 18+
-- MongoDB running locally **or** a MongoDB Atlas URI
+- MongoDB running locally or a MongoDB Atlas URI
 
 ### Setup
 
 ```bash
-# 1. Clone the repo
+# 1. Clone
 git clone https://github.com/zainabhina05-png/CRM-Dashboard.git
 cd CRM-Dashboard
 
-# 2. Install server dependencies
+# 2. Server
 cd server
 npm install
 cp .env.example .env
 # Edit server/.env — fill in MONGO_URI, JWT_SECRET, JWT_REFRESH_SECRET
 
-# 3. Install client dependencies
+# 3. Client
 cd ../client
 npm install
 cp .env.example .env
-# Default: VITE_API_BASE_URL=http://localhost:5000/api — no change needed locally
+# VITE_API_BASE_URL=http://localhost:5000/api is fine for local dev
 
-# 4. Start both servers (open two terminals)
-# Terminal 1:
+# 4. Start (two terminals)
 cd server && npm run dev      # Express on :5000
-
-# Terminal 2:
 cd client && npm run dev      # Vite on :5173
 ```
 
-Open **http://localhost:5173** — the Vite dev server proxies `/api/*` to `localhost:5000`.
+Open **http://localhost:5173** — Vite proxies `/api/*` to `localhost:5000`.
 
 ---
 
-## 🔒 Security & Privacy
+## Security & Privacy
 
-> **Important:** This repo follows best practices for secret management.
+> This repo follows best practices for secret management.
 
-- ✅ `.env` files are in `.gitignore` and **never committed**
-- ✅ Only `.env.example` templates (with placeholder values) are tracked
-- ✅ `node_modules/` and `dist/` build artifacts are excluded
-- ✅ JWT secrets are never hardcoded — always loaded from environment
-- ✅ Test files use `test_secret` placeholder values only
-- ⚠️ When deploying, **generate fresh secrets** — never reuse dev values in production
+- `.env` files are gitignored and **never committed** to this repo
+- Only `.env.example` template files (with safe placeholder values) are tracked
+- `node_modules/` and `dist/` build artifacts are excluded
+- JWT secrets are always loaded from environment variables — never hardcoded
+- Test files use throwaway `test_secret` values only
+- **When deploying:** generate fresh production secrets — never reuse dev values
 
 ---
 
-## 🧪 Running Tests
+## Running Tests
 
 ```bash
 cd server
-npm test              # run all 43 tests once
+npm test              # run all 43 tests
 npm run test:watch    # watch mode
 ```
 
@@ -237,7 +225,38 @@ Tests use a dedicated `leadflow_test` database and clean up after each run.
 
 ---
 
-## 🔗 Webhook Integration
+## Environment Variables Reference
+
+### `server/.env`
+
+| Variable | Required | Description |
+|---|---|---|
+| `MONGO_URI` | Yes | MongoDB connection string |
+| `JWT_SECRET` | Yes | Secret for access tokens — use a long random string |
+| `JWT_EXPIRES_IN` | | Token TTL (default: `15m`) |
+| `JWT_REFRESH_SECRET` | Yes | Refresh token secret — must differ from `JWT_SECRET` |
+| `JWT_REFRESH_EXPIRES_IN` | | Refresh TTL (default: `7d`) |
+| `PORT` | | Server port (default: `5000`) |
+| `NODE_ENV` | | `development` / `production` / `test` |
+| `CLIENT_ORIGIN` | | Frontend URL for CORS (e.g. `https://your-app.vercel.app`) |
+| `SMTP_HOST` | | SMTP hostname (leave blank = console stub in dev) |
+| `SMTP_PORT` | | SMTP port (default: `587`) |
+| `SMTP_SECURE` | | `true` for port 465, `false` otherwise |
+| `SMTP_USER` | | SMTP username / email |
+| `SMTP_PASS` | | SMTP password / app password |
+| `SMTP_FROM` | | From address in emails |
+| `WEBHOOK_SECRET` | | HMAC secret for inbound webhooks |
+| `WEBHOOK_OWNER_ID` | | MongoDB `_id` of user who owns webhook leads |
+
+### `client/.env`
+
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_API_BASE_URL` | Yes | Full backend URL e.g. `https://leadflow-api.onrender.com/api` |
+
+---
+
+## Webhook Integration
 
 External tools (Zapier, Facebook Lead Ads, custom forms) can POST leads directly:
 
@@ -257,71 +276,28 @@ X-LeadFlow-Signature: sha256=<HMAC-SHA256 of body using WEBHOOK_SECRET>
 }
 ```
 
-**Generate the HMAC signature:**
+**Generate HMAC signature:**
 ```js
 const crypto = require('crypto');
 const body = JSON.stringify(payload);
 const sig = 'sha256=' + crypto.createHmac('sha256', WEBHOOK_SECRET).update(body).digest('hex');
 ```
 
-> The signature check is **skipped in development** (`NODE_ENV !== 'production'`) for easy local testing.
+> Signature check is skipped in development for easy local testing.
 
 ---
 
-## 📝 Environment Variables Reference
-
-### `server/.env`
-
-| Variable | Required | Description |
-|---|---|---|
-| `MONGO_URI` | ✅ | MongoDB connection string |
-| `JWT_SECRET` | ✅ | Secret for signing access tokens — **use a long random string** |
-| `JWT_EXPIRES_IN` | | Access token TTL (default: `15m`) |
-| `JWT_REFRESH_SECRET` | ✅ | Refresh token secret — **must differ from JWT_SECRET** |
-| `JWT_REFRESH_EXPIRES_IN` | | Refresh token TTL (default: `7d`) |
-| `PORT` | | Server port (default: `5000`) |
-| `NODE_ENV` | | `development` \| `production` \| `test` |
-| `CLIENT_ORIGIN` | | Production frontend URL for CORS (e.g. `https://your-app.vercel.app`) |
-| `SMTP_HOST` | | SMTP server hostname (leave blank to use console stub in dev) |
-| `SMTP_PORT` | | SMTP port (default: `587`) |
-| `SMTP_SECURE` | | `true` for port 465, `false` otherwise |
-| `SMTP_USER` | | SMTP username / email |
-| `SMTP_PASS` | | SMTP password / app password |
-| `SMTP_FROM` | | From address shown in emails |
-| `WEBHOOK_SECRET` | | HMAC secret for verifying inbound webhooks |
-| `WEBHOOK_OWNER_ID` | | MongoDB `_id` of the user who owns webhook-captured leads |
-
-### `client/.env`
-
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_BASE_URL` | ✅ | Full URL to the backend API (e.g. `https://leadflow-api.onrender.com/api`) |
-
----
-
-## 📋 Logging
-
-In development, Winston prints colourised output to the console.  
-In production (`NODE_ENV=production`), logs are written to:
-
-- `server/logs/error.log` — errors only (5 MB max, 5 files)
-- `server/logs/combined.log` — all levels (10 MB max, 10 files)
-
-The `logs/` directory is gitignored.
-
----
-
-## 🌐 Alternative Deployment Options
+## Alternative Deployment Options
 
 <details>
 <summary><b>Option B — Fullstack on Vercel (Serverless)</b></summary>
 
-The `vercel.json` at the repo root wraps the Express app as a serverless function.
+The `vercel.json` at the repo root wraps Express as a serverless function.
 
-> ⚠️ **Limitation:** The reminder scheduler (`setInterval`) will not persist between cold starts. Use a Vercel Cron Job or external service (EasyCron, Cronhooks) instead.
+> **Limitation:** The reminder scheduler (`setInterval`) will not persist between cold starts. Use a Vercel Cron Job or an external cron service (EasyCron, Cronhooks) to trigger reminders instead.
 
 1. Import repo on Vercel (select **root** as project root)
-2. Add **all** server environment variables in Vercel Project Settings → Environment Variables
+2. Add all server environment variables in Vercel Project Settings → Environment Variables
 3. Deploy — Vercel auto-detects `vercel.json`
 
 </details>
@@ -331,7 +307,7 @@ The `vercel.json` at the repo root wraps the Express app as a serverless functio
 
 The `netlify.toml` is pre-configured for the client build.
 
-1. Deploy backend to Render (same as Step 2 above)
+1. Deploy backend to Render (same as Step 2)
 2. Import `client` folder on Netlify
 3. In `netlify.toml`, replace the redirect target:
    ```toml
@@ -345,8 +321,8 @@ The `netlify.toml` is pre-configured for the client build.
 
 <div align="center">
 
-**Built with ❤️ by [@zainabhina05-png](https://github.com/zainabhina05-png)**
+**Built with care by [@zainabhina05-png](https://github.com/zainabhina05-png)**
 
-*If this project helped you, a ⭐ on GitHub means a lot!*
+*If this project helped you, a star on GitHub means a lot!*
 
 </div>
