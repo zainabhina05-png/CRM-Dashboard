@@ -139,6 +139,17 @@ app.get('/api/health', (_req, res) => {
   res.status(200).json({ success: true, message: 'Server is running', data: null });
 });
 
+// Debug endpoint to check env vars (remove after fixing)
+app.get('/api/debug', (_req, res) => {
+  res.json({
+    hasMongoUri: !!process.env.MONGO_URI,
+    hasJwtSecret: !!process.env.JWT_SECRET,
+    clientOrigin: process.env.CLIENT_ORIGIN,
+    nodeEnv: process.env.NODE_ENV,
+    isVercel: !!process.env.VERCEL,
+  });
+});
+
 // Global error handler (registered last)
 app.use(errorHandler);
 
