@@ -60,25 +60,28 @@ app.use(
   })
 );
 
-// CORS — allow localhost + Vercel/Netlify preview URLs + configured CLIENT_ORIGIN
-const allowedOrigins = [
-  'http://localhost:5173',
-  process.env.CLIENT_ORIGIN,
-];
-
+// CORS — allow all Vercel apps during development, restrict in production via CLIENT_ORIGIN
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      if (
-        allowedOrigins.includes(origin) ||
-        origin.endsWith('.vercel.app') ||
-        origin.endsWith('.netlify.app')
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
+      
+      // Always allow localhost
+      if (origin.includes('localhost')) {
+        return callback(null, true);
       }
+      
+      // Always allow .vercel.app and .netlify.app origins
+      if (origin.endsWith('.vercel.app') || origin.endsWith('.netlify.app')) {
+        return callback(null, true);
+      }
+      
+      // Check CLIENT_ORIGIN if set
+      if (process.env.CLIENT_ORIGIN && origin === process.env.CLIENT_ORIGIN) {
+        return callback(null, true);
+      }
+      
+      callback(new Error('Not allowed by CORS'));
     },
     credentials: true,
   })
