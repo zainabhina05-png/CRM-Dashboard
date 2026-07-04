@@ -2,14 +2,7 @@ import api from './api';
 
 /**
  * All functions return the full axios response so callers
- * can access response.data.{token,user} consistently.
- * The api instance does NOT auto-unwrap — it returns the
- * full AxiosResponse, so callers use res.data.data.user etc.
- *
- * Fix: authService was destructuring { data } from axios,
- * making the return value the server's JSON body directly.
- * AuthContext expected res.data.user (AxiosResponse shape).
- * Now we return the raw AxiosResponse for consistency.
+ * can access res.data.data.{token,user} consistently.
  */
 
 export const register = async (name, email, password) => {
@@ -18,6 +11,14 @@ export const register = async (name, email, password) => {
 
 export const login = async (email, password) => {
   return api.post('/auth/login', { email, password });
+};
+
+export const logout = async () => {
+  return api.post('/auth/logout');
+};
+
+export const refreshToken = async () => {
+  return api.post('/auth/refresh');
 };
 
 export const getMe = async () => {

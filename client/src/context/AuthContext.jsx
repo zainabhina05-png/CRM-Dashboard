@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useReducer, useCallback } from 'react';
-import { getMe, login as loginService, register as registerService } from '../services/authService';
+import {
+  getMe,
+  login as loginService,
+  register as registerService,
+  logout as logoutService,
+} from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -13,7 +18,13 @@ const initialState = {
 const authReducer = (state, action) => {
   switch (action.type) {
     case 'AUTH_SUCCESS':
-      return { ...state, user: action.payload.user, token: action.payload.token, loading: false, error: null };
+      return {
+        ...state,
+        user: action.payload.user,
+        token: action.payload.token,
+        loading: false,
+        error: null,
+      };
     case 'AUTH_FAIL':
       return { ...state, user: null, token: null, loading: false, error: action.payload };
     case 'LOGOUT':
@@ -45,6 +56,9 @@ export const AuthProvider = ({ children }) => {
           payload: { user: res.data.data.user, token },
         });
       } catch {
+        // api.js refresh interceptor will attempt a silent refresh.
+        // If that also fails it redirects to /login and clears storage.
+        // We still need to mark loading:false here so the UI unblocks.
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         dispatch({ type: 'AUTH_FAIL', payload: null });
@@ -85,10 +99,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    dispatch({ type: 'LOGOUT' });
+  const logout = useCallback(async () => {
+    try {
+      // Revoke refresh token server-side + clear cookie
+      await logoutService();
+    } catch {
+      // Ignore errors — we always clear local state
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      dispatch({ type: 'LOGOUT' });
+    }
   }, []);
 
   const clearError = useCallback(() => {
