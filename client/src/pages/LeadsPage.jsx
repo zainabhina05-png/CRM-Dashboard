@@ -2,10 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useLeads from '../hooks/useLeads';
 import useDebounce from '../hooks/useDebounce';
+import useRole from '../hooks/useRole';
+import { useToast } from '../context/ToastContext';
 import LeadTable from '../components/LeadTable';
 import LeadModal from '../components/LeadModal';
+import LeadDetailPanel from '../components/LeadDetailPanel';
 import Pagination from '../components/Pagination';
-import { LEAD_STATUSES, DEFAULT_PAGE_SIZE } from '../constants';
+import { LEAD_STATUSES, DEFAULT_PAGE_SIZE, LEAD_SOURCES } from '../constants';
 
 const LeadsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,7 +24,10 @@ const LeadsPage = () => {
     return false;
   });
   const [editingLead, setEditingLead] = useState(null);
+  const [detailLeadId, setDetailLeadId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [sourceFilter, setSourceFilter] = useState('All');
+  const [tagFilter, setTagFilter] = useState('');
 
   const debouncedSearch = useDebounce(search);
 
@@ -31,17 +37,23 @@ const LeadsPage = () => {
     loading,
     error,
     fetchLeads,
-    addLead,
-    editLead,
     changeStatus,
     removeLead,
     clearError,
+    selectedLead,
+    fetchLeadDetail,
+    logActivity,
+    clearSelectedLead,
+    exportCSV,
   } = useLeads();
+
+  const { can } = useRole();
+  const { toast } = useToast();
 
   // Fetch leads whenever filters/page change — debounced search prevents call on every keystroke
   useEffect(() => {
-    fetchLeads({ page, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch, status: statusFilter });
-  }, [fetchLeads, page, debouncedSearch, statusFilter]);
+    fetchLeads({ page, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch, status: statusFilter, source: sourceFilter, tag: tagFilter });
+  }, [fetchLeads, page, debouncedSearch, statusFilter, sourceFilter, tagFilter]);
 
   // Sync status filter and clean up ?new param from URL on mount
   useEffect(() => {
@@ -95,19 +107,38 @@ const LeadsPage = () => {
     }, { replace: true });
   }, [setSearchParams]);
 
-  const handleModalSubmit = useCallback(async (formData) => {
-    try {
-      if (editingLead) {
-        await editLead(editingLead._id, formData);
-      } else {
-        await addLead(formData);
-      }
-      handleModalClose();
-      fetchLeads({ page, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch, status: statusFilter });
-    } catch {
-      // error set in hook
-    }
-  }, [editingLead, editLead, addLead, handleModalClose, fetchLeads, page, debouncedSearch, statusFilter]);
+  const handleModalSubmit = useCallback(async () => {
+    handleModalClose();
+    fetchLeads({ page, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch, status: statusFilter, source: sourceFilter });
+    toast.success(editingLead ? 'Lead updated' : 'Lead created');
+  }, [handleModalClose, fetchLeads, page, debouncedSearch, statusFilter, sourceFilter, toast, editingLead]);
+
+  const handleViewLead = useCallback(async (lead) => {
+    setDetailLeadId(lead._id);
+    await fetchLeadDetail(lead._id);
+  }, [fetchLeadDetail]);
+
+  const handleDetailClose = useCallback(() => {
+    setDetailLeadId(null);
+    clearSelectedLead();
+  }, [clearSelectedLead]);
+
+  const handleEditFromDetail = useCallback((lead) => {
+    setEditingLead(lead);
+    setModalOpen(true);
+    handleDetailClose();
+  }, [handleDetailClose]);
+
+  const handleLogActivity = useCallback(async (payload) => {
+    if (!detailLeadId) return;
+    await logActivity(detailLeadId, payload);
+  }, [detailLeadId, logActivity]);
+
+  const handleDetailStatusChange = useCallback(async (id, status) => {
+    await changeStatus(id, status);
+    if (detailLeadId) await fetchLeadDetail(detailLeadId);
+    fetchLeads({ page, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch, status: statusFilter, source: sourceFilter });
+  }, [changeStatus, detailLeadId, fetchLeadDetail, fetchLeads, page, debouncedSearch, statusFilter, sourceFilter]);
 
   const handleStatusChange = useCallback((id, status) => {
     changeStatus(id, status);
@@ -122,12 +153,21 @@ const LeadsPage = () => {
     try {
       await removeLead(deleteConfirm);
       setDeleteConfirm(null);
-      // Refresh list in case current page goes empty
-      fetchLeads({ page, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch, status: statusFilter });
+      fetchLeads({ page, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch, status: statusFilter, source: sourceFilter });
+      toast.success('Lead deleted');
     } catch {
-      // error set in hook
+      toast.error('Failed to delete lead');
     }
-  }, [deleteConfirm, removeLead, fetchLeads, page, debouncedSearch, statusFilter]);
+  }, [deleteConfirm, removeLead, fetchLeads, page, debouncedSearch, statusFilter, sourceFilter, toast]);
+
+  const handleExport = useCallback(async () => {
+    try {
+      await exportCSV({ status: statusFilter, source: sourceFilter, search: debouncedSearch });
+      toast.success('Export ready — check your downloads');
+    } catch {
+      toast.error('Export failed');
+    }
+  }, [exportCSV, statusFilter, sourceFilter, debouncedSearch, toast]);
 
   const allStatuses = ['All', ...LEAD_STATUSES];
 
@@ -147,6 +187,16 @@ const LeadsPage = () => {
         >
           + Add Lead
         </button>
+        {can('export_leads') && (
+          <button
+            id="export-leads-btn"
+            className="btn btn--ghost"
+            onClick={handleExport}
+            disabled={loading}
+          >
+            ↓ Export CSV
+          </button>
+        )}
       </div>
 
       {/* Toolbar */}
@@ -186,6 +236,18 @@ const LeadsPage = () => {
             </button>
           ))}
         </div>
+
+        <select
+          value={sourceFilter}
+          onChange={(e) => { setSourceFilter(e.target.value); setPage(1); }}
+          aria-label="Filter by source"
+          className="pipeline-source-filter"
+        >
+          <option value="All">All Sources</option>
+          {LEAD_SOURCES.map(({ value, label }) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </select>
       </div>
 
       {error && (
@@ -202,6 +264,7 @@ const LeadsPage = () => {
         onEdit={handleEdit}
         onDelete={handleDeleteRequest}
         onStatusChange={handleStatusChange}
+        onView={handleViewLead}
       />
 
       {/* Pagination */}
@@ -209,15 +272,6 @@ const LeadsPage = () => {
         page={pagination.page}
         pages={pagination.pages}
         onPageChange={handlePageChange}
-      />
-
-      {/* Lead form modal */}
-      <LeadModal
-        isOpen={modalOpen}
-        onClose={handleModalClose}
-        onSubmit={handleModalSubmit}
-        initialData={editingLead}
-        loading={loading}
       />
 
       {/* Delete confirmation */}
@@ -248,6 +302,25 @@ const LeadsPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      <LeadModal
+        isOpen={modalOpen}
+        onClose={handleModalClose}
+        onSubmit={handleModalSubmit}
+        initialData={editingLead}
+        loading={loading}
+      />
+
+      {detailLeadId && (
+        <LeadDetailPanel
+          lead={selectedLead}
+          loading={loading}
+          onClose={handleDetailClose}
+          onEdit={handleEditFromDetail}
+          onLogActivity={handleLogActivity}
+          onStatusChange={handleDetailStatusChange}
+        />
       )}
     </div>
   );

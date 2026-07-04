@@ -50,7 +50,7 @@ const DashboardPage = () => {
 
         {loading ? (
           <div className="analytics-grid">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="analytics-card analytics-card--skeleton" />
             ))}
           </div>
@@ -75,6 +75,10 @@ const DashboardPage = () => {
             <span className="quick-action-card__icon">≡</span>
             <span>View All Leads</span>
           </Link>
+          <Link to="/pipeline" className="quick-action-card glass-card" id="pipeline-card">
+            <span className="quick-action-card__icon">▦</span>
+            <span>Pipeline Board</span>
+          </Link>
           <Link to="/leads?new=true" className="quick-action-card glass-card" id="add-lead-card">
             <span className="quick-action-card__icon">+</span>
             <span>Add New Lead</span>
@@ -86,6 +90,10 @@ const DashboardPage = () => {
           <Link to="/leads?status=New" className="quick-action-card glass-card" id="new-leads-card">
             <span className="quick-action-card__icon">●</span>
             <span>New Leads</span>
+          </Link>
+          <Link to="/analytics" className="quick-action-card glass-card" id="analytics-card">
+            <span className="quick-action-card__icon">📊</span>
+            <span>Analytics</span>
           </Link>
         </div>
       </section>
