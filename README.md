@@ -5,8 +5,8 @@
 **A full-stack MERN CRM for modern lead pipeline management**  
 Built by **@zainabhina05-png** &nbsp;·&nbsp; Deployed on **Vercel**
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://client-cyan-rho.vercel.app)
-[![API](https://img.shields.io/badge/Backend_API-Vercel-000000?style=for-the-badge&logo=vercel)](https://crm-dashboard-seven-mu.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://leadflow-crm-frontend.vercel.app)
+[![API](https://img.shields.io/badge/Backend_API-Vercel-000000?style=for-the-badge&logo=vercel)](https://leadflow-crm-backend.vercel.app)
 [![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-43_Passing-22c55e?style=for-the-badge&logo=jest)](server/__tests__)
 

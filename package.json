@@ -5,7 +5,13 @@
   "scripts": {
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
-    "dev": "start npm run server & npm run client"
+    "dev": "start npm run server & npm run client",
+    "build": "cd client && npm run build",
+    "generate-secrets": "node scripts/generate-secrets.js",
+    "deploy:setup": "echo 'Run npm run generate-secrets first, then deploy client and server separately to Vercel'",
+    "test": "cd server && npm test",
+    "test:deployment": "node scripts/test-deployment.js",
+    "seed": "cd server && node ../scripts/seed.js"
   },
   "private": true
 }
