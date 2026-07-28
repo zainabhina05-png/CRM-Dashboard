@@ -21,4 +21,28 @@ export default defineConfig({
       },
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/__tests__/setup.js',
+    css: false,
+    env: {
+      VITE_API_BASE_URL: 'http://localhost:5000/api',
+    },
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json-summary'],
+      include: ['src/**/*.{js,jsx}'],
+      exclude: [
+        'src/main.jsx',
+        'src/**/__tests__/**',
+        'src/styles/**',
+      ],
+      thresholds: {
+        lines: 18,
+        functions: 13,
+        branches: 14,
+      },
+    },
+  },
 })

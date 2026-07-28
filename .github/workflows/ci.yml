@@ -1,0 +1,200 @@
+name: CI — LeadFlow CRM
+
+on:
+  push:
+    branches: [main, develop, "feat/**", "fix/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ─────────────────────────────────────────────
+  # Job 1: Lint
+  # ─────────────────────────────────────────────
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+
+      - name: Install client deps
+        run: cd client && npm ci
+
+      - name: Lint client
+        run: cd client && npm run lint
+
+  # ─────────────────────────────────────────────
+  # Job 2: Backend tests + coverage
+  # ─────────────────────────────────────────────
+  test-backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install server deps
+        run: cd server && npm ci
+
+      - name: Run server tests with coverage
+        run: cd server && npm test -- --coverage
+        env:
+          NODE_ENV: test
+          JWT_SECRET: ci_test_secret_32_chars_minimum_ok
+          JWT_REFRESH_SECRET: ci_test_refresh_different_secret
+          JWT_EXPIRES_IN: 15m
+          JWT_REFRESH_EXPIRES_IN: 7d
+          # mongodb-memory-server downloads its own mongod binary — no external DB needed
+
+      - name: Upload backend coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-coverage
+          path: server/coverage/
+
+  # ─────────────────────────────────────────────
+  # Job 3: Frontend tests + coverage
+  # ─────────────────────────────────────────────
+  test-frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install client deps
+        run: cd client && npm ci
+
+      - name: Run frontend tests with coverage
+        run: cd client && npm run test:coverage
+        env:
+          VITE_API_BASE_URL: http://localhost:5000/api
+
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: client/coverage/
+
+  # ─────────────────────────────────────────────
+  # Job 4: Build verification
+  # ─────────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [lint, test-backend, test-frontend]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install client deps
+        run: cd client && npm ci
+
+      - name: Build frontend
+        run: cd client && npm run build
+        env:
+          VITE_API_BASE_URL: https://placeholder-api.vercel.app/api
+
+      - name: Verify build output
+        run: |
+          if [ ! -f client/dist/index.html ]; then
+            echo "Build failed: index.html missing"
+            exit 1
+          fi
+          echo "Build output:"
+          ls -lh client/dist/
+          echo "✅ Build verification passed"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-dist
+          path: client/dist/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # Job 5: Deploy to Vercel (main branch only)
+  # ─────────────────────────────────────────────
+  deploy:
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: ${{ steps.deploy-frontend.outputs.url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      # Deploy backend (server/)
+      - name: Deploy backend to Vercel
+        id: deploy-backend
+        run: |
+          cd server
+          vercel --prod \
+            --token="${{ secrets.VERCEL_TOKEN }}" \
+            --scope="${{ secrets.VERCEL_ORG_ID }}" \
+            --yes \
+            2>&1 | tee deploy-backend.log
+          BACKEND_URL=$(grep -oP 'https://[^\s]+\.vercel\.app' deploy-backend.log | head -1)
+          echo "url=${BACKEND_URL}" >> $GITHUB_OUTPUT
+        continue-on-error: true # Don't fail if deploy credentials not set up
+
+      # Deploy frontend (client/)
+      - name: Deploy frontend to Vercel
+        id: deploy-frontend
+        run: |
+          cd client
+          vercel --prod \
+            --token="${{ secrets.VERCEL_TOKEN }}" \
+            --scope="${{ secrets.VERCEL_ORG_ID }}" \
+            --yes \
+            --build-env VITE_API_BASE_URL="${{ steps.deploy-backend.outputs.url }}/api" \
+            2>&1 | tee deploy-frontend.log
+          FRONTEND_URL=$(grep -oP 'https://[^\s]+\.vercel\.app' deploy-frontend.log | head -1)
+          echo "url=${FRONTEND_URL}" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Deployment summary
+        run: |
+          echo "🚀 Deployment Summary"
+          echo "===================="
+          echo "Backend URL: ${{ steps.deploy-backend.outputs.url }}"
+          echo "Frontend URL: ${{ steps.deploy-frontend.outputs.url }}"
+          echo ""
+          echo "Required GitHub Secrets for automated deployment:"
+          echo "  VERCEL_TOKEN, VERCEL_ORG_ID"
+          echo ""
+          echo "Run 'node scripts/generate-secrets.js' locally to"
+          echo "generate new JWT secrets for Vercel project settings."
