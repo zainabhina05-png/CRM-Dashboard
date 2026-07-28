@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   ResponsiveContainer,
   BarChart,
@@ -17,6 +18,7 @@ import {
 } from 'recharts';
 import useLeads from '../hooks/useLeads';
 import useRole from '../hooks/useRole';
+import { pageVariants } from '../styles/motion';
 import { LEAD_STATUSES, STATUS_COLORS, SOURCE_LABELS } from '../constants';
 
 /* ── Shared chart colours from theme ───────────────────── */
@@ -152,7 +154,13 @@ const AnalyticsPage = () => {
   ];
 
   return (
-    <div className="page" style={{ animation: 'fadeUp 0.2s ease both' }}>
+    <motion.div
+      className="page"
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       {/* Header */}
       <div className="page__header">
         <div>
@@ -408,7 +416,7 @@ const AnalyticsPage = () => {
           )}
         </ChartCard>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

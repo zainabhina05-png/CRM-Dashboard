@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import useLeads from '../hooks/useLeads';
 import useDebounce from '../hooks/useDebounce';
@@ -6,6 +7,7 @@ import useRole from '../hooks/useRole';
 import { useToast } from '../context/ToastContext';
 import LeadTable from '../components/LeadTable';
 import LeadModal from '../components/LeadModal';
+import { pageVariants } from '../styles/motion';
 import LeadDetailPanel from '../components/LeadDetailPanel';
 import Pagination from '../components/Pagination';
 import { LEAD_STATUSES, DEFAULT_PAGE_SIZE, LEAD_SOURCES } from '../constants';
@@ -172,7 +174,13 @@ const LeadsPage = () => {
   const allStatuses = ['All', ...LEAD_STATUSES];
 
   return (
-    <div className="page">
+    <motion.div
+      className="page"
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       <div className="page__header">
         <div>
           <h1 className="page__title">Leads</h1>
@@ -322,7 +330,7 @@ const LeadsPage = () => {
           onStatusChange={handleDetailStatusChange}
         />
       )}
-    </div>
+    </motion.div>
   );
 };
 

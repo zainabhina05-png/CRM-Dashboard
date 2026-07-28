@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import useLeads from '../hooks/useLeads';
 import useDebounce from '../hooks/useDebounce';
 import KanbanBoard from '../components/KanbanBoard';
 import LeadModal from '../components/LeadModal';
 import LeadDetailPanel from '../components/LeadDetailPanel';
+import { pageVariants } from '../styles/motion';
 import { LEAD_SOURCES } from '../constants';
 import { useToast } from '../context/ToastContext';
 
@@ -87,7 +89,13 @@ const PipelinePage = () => {
   }, [handleModalClose, refreshKanban]);
 
   return (
-    <div className="page page--pipeline">
+    <motion.div
+      className="page page--pipeline"
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       <div className="page__header">
         <div>
           <h1 className="page__title">Pipeline</h1>
@@ -157,7 +165,7 @@ const PipelinePage = () => {
         initialData={editingLead}
         loading={loading}
       />
-    </div>
+    </motion.div>
   );
 };
 

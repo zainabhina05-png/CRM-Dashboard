@@ -41,8 +41,8 @@ const connectDB = async () => {
     logger.error(`Database connection failed: ${error.message}`);
     cachedConnection = null;
     
-    // In serverless, don't crash the process - let the function fail gracefully
-    if (process.env.VERCEL) {
+    // In test env, don't crash the process — let the test runner handle it
+    if (process.env.VERCEL || process.env.NODE_ENV === 'test') {
       throw error;
     } else {
       process.exit(1);

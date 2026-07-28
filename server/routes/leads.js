@@ -5,6 +5,11 @@ const authorize = require('../middleware/authorize');
 const { findDuplicates } = require('../utils/duplicateDetection');
 const { sendLeadAssignedEmail } = require('../utils/emailService');
 const {
+  pipelineStatusGuard,
+  sanitizeTextFields,
+  verifyLeadOwnership,
+} = require('../middleware/pipelineSecurity');
+const {
   validate,
   createLeadRules,
   updateLeadRules,
@@ -12,6 +17,7 @@ const {
   checkDuplicatesRules,
   addActivityRules,
 } = require('../middleware/validators');
+const { logSecurityEvent } = require('../middleware/authSecurity');
 
 const router = express.Router();
 const PIPELINE_STATUSES = Lead.LEAD_STATUSES || ['New', 'Contacted', 'Qualified', 'Proposal', 'Won', 'Lost'];
@@ -41,7 +47,7 @@ router.post('/check-duplicates', checkDuplicatesRules, validate, async (req, res
 });
 
 // POST /api/leads — Create a new lead (with duplicate detection)
-router.post('/', createLeadRules, validate, async (req, res, next) => {
+router.post('/', sanitizeTextFields, createLeadRules, validate, async (req, res, next) => {
   try {
     const { name, email, phone, company, status, notes, source, tags, customFields, force } = req.body;
 
@@ -338,25 +344,14 @@ router.get('/analytics', async (req, res, next) => {
 });
 
 // GET /api/leads/:id — Get a single lead with activities
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', verifyLeadOwnership, async (req, res, next) => {
   try {
-    const lead = await Lead.findOne({
-      _id: req.params.id,
-      owner: req.user._id,
-    }).populate('activities.createdBy', 'name');
-
-    if (!lead) {
-      return res.status(404).json({
-        success: false,
-        message: 'Lead not found',
-        data: null,
-      });
-    }
+    await req.lead.populate('activities.createdBy', 'name');
 
     res.status(200).json({
       success: true,
       message: 'Lead retrieved successfully',
-      data: { lead },
+      data: { lead: req.lead },
     });
   } catch (error) {
     next(error);
@@ -364,22 +359,10 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // POST /api/leads/:id/activities — Log an activity on a lead
-router.post('/:id/activities', addActivityRules, validate, async (req, res, next) => {
+router.post('/:id/activities', sanitizeTextFields, verifyLeadOwnership, addActivityRules, validate, async (req, res, next) => {
   try {
+    const lead = req.lead;
     const { type, content } = req.body;
-
-    const lead = await Lead.findOne({
-      _id: req.params.id,
-      owner: req.user._id,
-    });
-
-    if (!lead) {
-      return res.status(404).json({
-        success: false,
-        message: 'Lead not found',
-        data: null,
-      });
-    }
 
     lead.activities.unshift({
       type,
@@ -401,17 +384,9 @@ router.post('/:id/activities', addActivityRules, validate, async (req, res, next
 });
 
 // PUT /api/leads/:id — Full update a lead
-router.put('/:id', updateLeadRules, validate, async (req, res, next) => {
+router.put('/:id', sanitizeTextFields, verifyLeadOwnership, updateLeadRules, validate, async (req, res, next) => {
   try {
-    const lead = await Lead.findOne({ _id: req.params.id, owner: req.user._id });
-    if (!lead) {
-      return res.status(404).json({
-        success: false,
-        message: 'Lead not found',
-        data: null,
-      });
-    }
-
+    const lead = req.lead; // already fetched + ownership verified
     const { status, ...rest } = req.body;
     const previousStatus = lead.status;
 
@@ -442,27 +417,35 @@ router.put('/:id', updateLeadRules, validate, async (req, res, next) => {
 });
 
 // PATCH /api/leads/:id/status — Partial update (status only)
-router.patch('/:id/status', patchStatusRules, validate, async (req, res, next) => {
+// Security chain: rate-limit → ownership/IDOR → transition rules → concurrency
+router.patch('/:id/status', ...pipelineStatusGuard, patchStatusRules, validate, async (req, res, next) => {
   try {
-    const existing = await Lead.findOne({ _id: req.params.id, owner: req.user._id });
-    if (!existing) {
-      return res.status(404).json({
-        success: false,
-        message: 'Lead not found',
-        data: null,
-      });
-    }
-
+    // req.lead already loaded and ownership verified by pipelineStatusGuard
+    const existing  = req.lead;
     const newStatus = req.body.status;
+
+    // G7 — Audit trail: log the stage change with full context
+    logSecurityEvent('PIPELINE_STAGE_CHANGE', {
+      userId:     req.user._id,
+      userRole:   req.user.role,
+      leadId:     existing._id,
+      leadOwner:  existing.owner,
+      fromStatus: existing.status,
+      toStatus:   newStatus,
+      ip:         req.ip,
+      userAgent:  req.get('user-agent'),
+      timestamp:  new Date().toISOString(),
+    });
+
     const lead = await Lead.findOneAndUpdate(
-      { _id: req.params.id, owner: req.user._id },
+      { _id: existing._id },          // ownership already verified above
       {
         status: newStatus,
         $push: {
           activities: {
             $each: [
               {
-                type: 'status_change',
+                type:    'status_change',
                 content: `Status changed from ${existing.status} to ${newStatus}`,
                 metadata: { fromStatus: existing.status, toStatus: newStatus },
                 createdBy: req.user._id,
@@ -486,20 +469,17 @@ router.patch('/:id/status', patchStatusRules, validate, async (req, res, next) =
 });
 
 // DELETE /api/leads/:id — Remove a lead (admin and manager only)
-router.delete('/:id', authorize('admin', 'manager'), async (req, res, next) => {
+router.delete('/:id', authorize('admin', 'manager'), verifyLeadOwnership, async (req, res, next) => {
   try {
-    const lead = await Lead.findOneAndDelete({
-      _id: req.params.id,
-      owner: req.user._id,
-    });
+    await Lead.findByIdAndDelete(req.lead._id);
 
-    if (!lead) {
-      return res.status(404).json({
-        success: false,
-        message: 'Lead not found',
-        data: null,
-      });
-    }
+    logSecurityEvent('LEAD_DELETED', {
+      userId:   req.user._id,
+      userRole: req.user.role,
+      leadId:   req.lead._id,
+      ip:       req.ip,
+      timestamp: new Date().toISOString(),
+    });
 
     res.status(200).json({
       success: true,

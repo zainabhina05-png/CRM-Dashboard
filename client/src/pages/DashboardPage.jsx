@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import useLeads from '../hooks/useLeads';
 import AnalyticsCard from '../components/AnalyticsCard';
 import { LEAD_STATUSES } from '../constants';
+import { pageVariants, statGrid, statCard } from '../styles/motion';
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -21,7 +23,13 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="page">
+    <motion.div
+      className="page"
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
       <div className="page__header">
         <div>
           <h1 className="page__title">
@@ -55,16 +63,22 @@ const DashboardPage = () => {
             ))}
           </div>
         ) : (
-          <div className="analytics-grid">
+          <motion.div
+            className="analytics-grid"
+            variants={statGrid}
+            initial="initial"
+            animate="animate"
+          >
             {LEAD_STATUSES.map((status) => (
-              <AnalyticsCard
-                key={status}
-                status={status}
-                count={analytics.counts[status] ?? 0}
-                total={analytics.total}
-              />
+              <motion.div key={status} variants={statCard}>
+                <AnalyticsCard
+                  status={status}
+                  count={analytics.counts[status] ?? 0}
+                  total={analytics.total}
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </section>
 
@@ -97,7 +111,7 @@ const DashboardPage = () => {
           </Link>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 };
 

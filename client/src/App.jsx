@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -34,24 +35,27 @@ const AppLayout = ({ children }) => {
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) return <PageLoader />;
 
   return (
     <AppLayout>
       <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/login"    element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
-          <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
+        <AnimatePresence mode="wait" initial={false}>
+          <Routes location={location} key={location.pathname}>
+            <Route path="/login"    element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+            <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <RegisterPage />} />
 
-          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/leads"     element={<ProtectedRoute><LeadsPage /></ProtectedRoute>} />
-          <Route path="/pipeline"  element={<ProtectedRoute><PipelinePage /></ProtectedRoute>} />
-          <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
+            <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+            <Route path="/leads"     element={<ProtectedRoute><LeadsPage /></ProtectedRoute>} />
+            <Route path="/pipeline"  element={<ProtectedRoute><PipelinePage /></ProtectedRoute>} />
+            <Route path="/analytics" element={<ProtectedRoute><AnalyticsPage /></ProtectedRoute>} />
 
-          <Route path="/"  element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
-          <Route path="*"  element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
-        </Routes>
+            <Route path="/"  element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
+            <Route path="*"  element={<Navigate to={user ? '/dashboard' : '/login'} replace />} />
+          </Routes>
+        </AnimatePresence>
       </Suspense>
     </AppLayout>
   );

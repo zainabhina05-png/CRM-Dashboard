@@ -1,0 +1,257 @@
+/**
+ * LeadFlow CRM — Design Token System
+ * 
+ * Single source of truth for all design values.
+ * Every component references these tokens; hardcoded values are forbidden.
+ * 
+ * System: Solar Ocean Glassmorphism
+ * Reference: Planix CRM Dashboard UI Kit (structural conventions only)
+ * Deviation rationale: Ocean/navy palette replaces generic blue-grey;
+ *   sunflower gold primary replaces standard purple/indigo accent;
+ *   glassmorphism depth replaces flat card pattern.
+ */
+
+:root {
+  /* ─────────────────────────────────────────────────────────
+     COLOUR SCALE  (10-step, dark-first for dark-mode default)
+     ───────────────────────────────────────────────────────── */
+
+  /* Base backgrounds — Deep Navy */
+  --color-bg-0:  #030810;   /* absolute darkest, overlays */
+  --color-bg-1:  #060d1a;   /* page background */
+  --color-bg-2:  #0a1628;   /* card background */
+  --color-bg-3:  #0f1e35;   /* elevated surfaces */
+  --color-bg-4:  #142240;   /* hover state surfaces */
+  --color-bg-5:  #1a2a4f;   /* focus/active surfaces */
+
+  /* Glass surfaces */
+  --color-glass-0: rgba(255,255,255,0.02);
+  --color-glass-1: rgba(255,255,255,0.03);
+  --color-glass-2: rgba(255,255,255,0.05);
+  --color-glass-3: rgba(255,255,255,0.08);
+  --color-glass-4: rgba(255,255,255,0.12);
+  --color-glass-border-1: rgba(255,255,255,0.08);
+  --color-glass-border-2: rgba(255,255,255,0.12);
+  --color-glass-border-3: rgba(255,255,255,0.18);
+
+  /* Text scale */
+  --color-text-1: #edf2ff;  /* primary text */
+  --color-text-2: #8fa8cc;  /* secondary text */
+  --color-text-3: #506080;  /* muted / placeholder */
+  --color-text-4: #304060;  /* very muted */
+
+  /* ── Primary — Sunflower Gold ───────────────────────────── */
+  --color-primary-bright:  #f5c842;
+  --color-primary:         #e5b62b;
+  --color-primary-dim:     #cc9900;
+  --color-primary-alpha-1: rgba(229,182,43,0.08);
+  --color-primary-alpha-2: rgba(229,182,43,0.15);
+  --color-primary-alpha-3: rgba(229,182,43,0.25);
+
+  /* ── Secondary — Ocean Teal ─────────────────────────────── */
+  --color-secondary-bright: #18c8c8;
+  --color-secondary:        #13a3a3;
+  --color-secondary-dim:    #0c82b8;
+  --color-secondary-alpha-1: rgba(19,163,163,0.08);
+  --color-secondary-alpha-2: rgba(19,163,163,0.15);
+  --color-secondary-alpha-3: rgba(19,163,163,0.25);
+
+  /* ── Semantic ───────────────────────────────────────────── */
+  --color-success:       #4fb86e;
+  --color-success-alpha: rgba(79,184,110,0.12);
+  --color-warning:       #e5b62b;
+  --color-warning-alpha: rgba(229,182,43,0.12);
+  --color-danger:        #e55b5b;
+  --color-danger-alpha:  rgba(229,91,91,0.12);
+  --color-info:          #45a3e5;
+  --color-info-alpha:    rgba(69,163,229,0.12);
+
+  /* ── Pipeline / Status ──────────────────────────────────── */
+  --color-status-new:       #45a3e5;
+  --color-status-contacted: #e5b62b;
+  --color-status-qualified: #13a3a3;
+  --color-status-proposal:  #8b5cf6;
+  --color-status-won:       #4fb86e;
+  --color-status-lost:      #e55b5b;
+
+  /* ─────────────────────────────────────────────────────────
+     GRADIENTS
+     ───────────────────────────────────────────────────────── */
+  --gradient-brand:  linear-gradient(135deg, var(--color-primary-bright) 0%, var(--color-secondary-bright) 100%);
+  --gradient-gold:   linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dim) 100%);
+  --gradient-teal:   linear-gradient(135deg, var(--color-secondary) 0%, var(--color-secondary-dim) 100%);
+  --gradient-bg:     linear-gradient(160deg, var(--color-bg-1) 0%, #040912 100%);
+
+  /* ─────────────────────────────────────────────────────────
+     TYPOGRAPHY
+     ───────────────────────────────────────────────────────── */
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+
+  /* Major-third scale (×1.25) */
+  --text-xs:   0.64rem;   /*  ~10px */
+  --text-sm:   0.8rem;    /*  ~13px */
+  --text-base: 0.875rem;  /*  ~14px */
+  --text-md:   1rem;      /*  16px  */
+  --text-lg:   1.125rem;  /*  18px  */
+  --text-xl:   1.25rem;   /*  20px  */
+  --text-2xl:  1.5rem;    /*  24px  */
+  --text-3xl:  1.875rem;  /*  30px  */
+  --text-4xl:  2.25rem;   /*  36px  */
+
+  --font-light:    300;
+  --font-regular:  400;
+  --font-medium:   500;
+  --font-semibold: 600;
+  --font-bold:     700;
+
+  --leading-tight:   1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.75;
+
+  /* ─────────────────────────────────────────────────────────
+     SPACING  (4 px base unit)
+     ───────────────────────────────────────────────────────── */
+  --space-px:  1px;
+  --space-0-5: 0.125rem;  /*  2px */
+  --space-1:   0.25rem;   /*  4px */
+  --space-1-5: 0.375rem;  /*  6px */
+  --space-2:   0.5rem;    /*  8px */
+  --space-2-5: 0.625rem;  /* 10px */
+  --space-3:   0.75rem;   /* 12px */
+  --space-3-5: 0.875rem;  /* 14px */
+  --space-4:   1rem;      /* 16px */
+  --space-5:   1.25rem;   /* 20px */
+  --space-6:   1.5rem;    /* 24px */
+  --space-7:   1.75rem;   /* 28px */
+  --space-8:   2rem;      /* 32px */
+  --space-10:  2.5rem;    /* 40px */
+  --space-12:  3rem;      /* 48px */
+  --space-16:  4rem;      /* 64px */
+  --space-20:  5rem;      /* 80px */
+  --space-24:  6rem;      /* 96px */
+
+  /* Component padding shortcuts */
+  --pad-xs: var(--space-1-5) var(--space-2);    /* 6 / 8   */
+  --pad-sm: var(--space-2) var(--space-3);       /* 8 / 12  */
+  --pad-md: var(--space-3) var(--space-4);       /* 12 / 16 */
+  --pad-lg: var(--space-4) var(--space-6);       /* 16 / 24 */
+  --pad-xl: var(--space-6) var(--space-8);       /* 24 / 32 */
+
+  /* ─────────────────────────────────────────────────────────
+     BORDER RADIUS
+     ───────────────────────────────────────────────────────── */
+  --radius-none: 0;
+  --radius-xs:   2px;
+  --radius-sm:   4px;
+  --radius:      6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* ─────────────────────────────────────────────────────────
+     SHADOWS
+     ───────────────────────────────────────────────────────── */
+  --shadow-xs:   0 1px 2px rgba(0,0,0,0.15);
+  --shadow-sm:   0 2px 4px rgba(0,0,0,0.20);
+  --shadow:      0 4px 8px rgba(0,0,0,0.30);
+  --shadow-md:   0 6px 16px rgba(0,0,0,0.35);
+  --shadow-lg:   0 8px 24px rgba(0,0,0,0.40);
+  --shadow-xl:   0 16px 40px rgba(0,0,0,0.50);
+  --shadow-btn:  0 2px 6px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.10);
+  --shadow-btn-hover: 0 4px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+  --shadow-glass: 0 8px 32px rgba(31,38,135,0.25);
+
+  /* ─────────────────────────────────────────────────────────
+     Z-INDEX SCALE
+     ───────────────────────────────────────────────────────── */
+  --z-below:   -1;
+  --z-base:     0;
+  --z-raised:  10;
+  --z-nav:    100;
+  --z-panel:  150;
+  --z-modal:  200;
+  --z-toast:  300;
+  --z-tooltip:400;
+
+  /* ─────────────────────────────────────────────────────────
+     MOTION  —  "Fast and purposeful, never decorative"
+     ───────────────────────────────────────────────────────── */
+
+  /* Durations */
+  --duration-instant: 0ms;
+  --duration-fast:    150ms;
+  --duration-normal:  250ms;
+  --duration-slow:    400ms;
+  --duration-page:    500ms;
+
+  /* Easing */
+  --ease-out:     cubic-bezier(0.16, 1, 0.30, 1);
+  --ease-in:      cubic-bezier(0.40, 0, 1.00, 1);
+  --ease-in-out:  cubic-bezier(0.40, 0, 0.20, 1);
+  --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Composite transition shorthands */
+  --transition:        var(--duration-fast)   var(--ease-out);
+  --transition-normal: var(--duration-normal)  var(--ease-out);
+  --transition-slow:   var(--duration-slow)    var(--ease-out);
+
+  /* ─────────────────────────────────────────────────────────
+     BREAKPOINTS  (reference only — use in JS / media queries)
+     ───────────────────────────────────────────────────────── */
+  /* --bp-sm:  640px  */
+  /* --bp-md:  768px  */
+  /* --bp-lg: 1024px  */
+  /* --bp-xl: 1280px  */
+}
+
+/* ───────────────────────────────────────────────────────────
+   Convenience aliases to bridge old token names → new ones.
+   Remove once all components are migrated.
+   ─────────────────────────────────────────────────────────── */
+:root {
+  --bg:               var(--color-bg-1);
+  --bg-2:             var(--color-bg-2);
+  --bg-3:             var(--color-bg-3);
+  --bg-4:             var(--color-bg-4);
+  --glass:            var(--color-glass-1);
+  --glass-2:          var(--color-glass-2);
+  --glass-3:          var(--color-glass-3);
+  --glass-border:     var(--color-glass-border-1);
+  --glass-border-2:   var(--color-glass-border-2);
+  --text:             var(--color-text-1);
+  --text-2:           var(--color-text-2);
+  --text-3:           var(--color-text-3);
+  --gold:             var(--color-primary);
+  --gold-bright:      var(--color-primary-bright);
+  --gold-dim:         var(--color-primary-alpha-1);
+  --gold-border:      var(--color-primary-alpha-3);
+  --teal:             var(--color-secondary);
+  --teal-bright:      var(--color-secondary-bright);
+  --teal-dim:         var(--color-secondary-alpha-1);
+  --teal-border:      var(--color-secondary-alpha-3);
+  --danger:           var(--color-danger);
+  --danger-dim:       var(--color-danger-alpha);
+  --success:          var(--color-success);
+  --status-new:       var(--color-status-new);
+  --status-contacted: var(--color-status-contacted);
+  --status-qualified: var(--color-status-qualified);
+  --status-proposal:  var(--color-status-proposal);
+  --status-won:       var(--color-status-won);
+  --status-lost:      var(--color-status-lost);
+  --gradient-brand:   var(--gradient-brand);
+  --gradient-gold:    var(--gradient-gold);
+  --gradient-teal:    var(--gradient-teal);
+  --gradient-bg:      var(--gradient-bg);
+  --radius-xs:        var(--radius-xs);
+  --radius-sm:        var(--radius-sm);
+  --radius-pill:      var(--radius-full);
+  --transition:       var(--transition);
+  --transition-slow:  var(--transition-normal);
+  --shadow-sm:        var(--shadow-sm);
+  --shadow:           var(--shadow);
+  --shadow-lg:        var(--shadow-lg);
+  --shadow-btn:       var(--shadow-btn);
+  --shadow-btn-hover: var(--shadow-btn-hover);
+}

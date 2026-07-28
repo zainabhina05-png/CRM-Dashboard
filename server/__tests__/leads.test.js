@@ -34,7 +34,6 @@ const createAndLoginUser = async (overrides = {}) => {
     .post('/api/auth/register')
     .send({
       name: 'Lead Tester',
-      email,
       password: 'password123',
       ...overrides,
       email, // ensure the generated email wins
@@ -243,29 +242,67 @@ describe('PUT /api/leads/:id', () => {
 
 /* ── PATCH /api/leads/:id/status ─────────────────────────── */
 describe('PATCH /api/leads/:id/status', () => {
-  let token, leadId;
+  let salesToken, managerToken, leadId;
   beforeEach(async () => {
-    token = await createAndLoginUser();
+    salesToken = await createAndLoginUser();
+
+    // Create manager directly via model since register always assigns sales_rep
+    const User = require('../models/User');
+    const mgr = await User.create({
+      name: 'Manager',
+      email: `mgr${Date.now()}@example.com`,
+      password: 'password123',
+      role: 'manager',
+    });
+    const loginRes = await request(app)
+      .post('/api/auth/login')
+      .send({ email: mgr.email, password: 'password123' });
+    managerToken = loginRes.body.data.token;
+
     const res = await request(app)
       .post('/api/leads')
-      .set(auth(token))
+      .set(auth(salesToken))
       .send(leadPayload());
     leadId = res.body.data.lead._id;
   });
 
-  it('patches status and returns updated lead', async () => {
+  it('patches status to a non-terminal stage for sales_rep', async () => {
     const res = await request(app)
       .patch(`/api/leads/${leadId}/status`)
-      .set(auth(token))
+      .set(auth(salesToken))
+      .send({ status: 'Contacted' });
+    expect(res.status).toBe(200);
+    expect(res.body.data.lead.status).toBe('Contacted');
+  });
+
+  it('manager can close a deal as Won', async () => {
+    // create lead under manager account
+    const mgrLeadRes = await request(app)
+      .post('/api/leads')
+      .set(auth(managerToken))
+      .send(leadPayload({ email: 'mgrlead@example.com', status: 'Proposal' }));
+    const mgrLeadId = mgrLeadRes.body.data.lead._id;
+
+    const res = await request(app)
+      .patch(`/api/leads/${mgrLeadId}/status`)
+      .set(auth(managerToken))
       .send({ status: 'Won' });
     expect(res.status).toBe(200);
     expect(res.body.data.lead.status).toBe('Won');
   });
 
+  it('sales_rep cannot close a deal as Won', async () => {
+    const res = await request(app)
+      .patch(`/api/leads/${leadId}/status`)
+      .set(auth(salesToken))
+      .send({ status: 'Won' });
+    expect(res.status).toBe(403);
+  });
+
   it('returns 422 for invalid status', async () => {
     const res = await request(app)
       .patch(`/api/leads/${leadId}/status`)
-      .set(auth(token))
+      .set(auth(salesToken))
       .send({ status: 'Invalid' });
     expect(res.status).toBe(422);
   });

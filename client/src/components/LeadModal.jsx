@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { LEAD_STATUSES, LEAD_SOURCES } from '../constants';
 import TagInput from './TagInput';
 import CustomFieldsEditor from './CustomFieldsEditor';
 import DuplicateWarningModal from './DuplicateWarningModal';
 import { createLead, updateLead, checkDuplicates } from '../services/leadService';
+import { modalVariants, overlayVariants } from '../styles/motion';
 
 const defaultForm = {
   name: '',
@@ -135,154 +137,145 @@ const LeadModal = ({ isOpen, onClose, onSubmit, initialData, loading: externalLo
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
-  if (!isOpen) return null;
-
   const loading = submitting || externalLoading;
 
   return (
-    <>
-      <div
-        className="modal-overlay"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        onClick={(e) => e.target === e.currentTarget && onClose()}
-      >
-        <div className="modal modal--lg">
-          <div className="modal__header">
-            <h2 id="modal-title">{initialData ? 'Edit Lead' : 'New Lead'}</h2>
-            <button type="button" className="modal__close" onClick={onClose} aria-label="Close modal">✕</button>
-          </div>
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            key="overlay"
+            className="modal-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            variants={overlayVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            onClick={(e) => e.target === e.currentTarget && onClose()}
+          >
+            <motion.div
+              key="modal"
+              className="modal modal--lg"
+              variants={modalVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <div className="modal__header">
+                <h2 id="modal-title">{initialData ? 'Edit Lead' : 'New Lead'}</h2>
+                <button type="button" className="modal__close" onClick={onClose} aria-label="Close modal">✕</button>
+              </div>
 
-          {errors.form && (
-            <div className="alert alert--error" style={{ margin: '0 1.25rem' }}>{errors.form}</div>
-          )}
+              {errors.form && (
+                <div className="alert alert--error" style={{ margin: '0 1.25rem' }}>{errors.form}</div>
+              )}
 
-          <form id="lead-form" className="modal__form" onSubmit={handleSubmit} noValidate>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="lead-name">Name *</label>
-                <input
-                  id="lead-name"
-                  ref={firstInputRef}
-                  name="name"
-                  type="text"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="John Doe"
-                  className={errors.name ? 'input--error' : ''}
-                  autoComplete="off"
+              <form id="lead-form" className="modal__form" onSubmit={handleSubmit} noValidate>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="lead-name">Name *</label>
+                    <input
+                      id="lead-name"
+                      ref={firstInputRef}
+                      name="name"
+                      type="text"
+                      value={form.name}
+                      onChange={handleChange}
+                      placeholder="John Doe"
+                      className={errors.name ? 'input--error' : ''}
+                      autoComplete="off"
+                    />
+                    {errors.name && <span className="form-error">{errors.name}</span>}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="lead-email">Email *</label>
+                    <input
+                      id="lead-email"
+                      name="email"
+                      type="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      placeholder="john@example.com"
+                      className={errors.email ? 'input--error' : ''}
+                      autoComplete="off"
+                    />
+                    {errors.email && <span className="form-error">{errors.email}</span>}
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="lead-phone">Phone</label>
+                    <input id="lead-phone" name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="+1 (555) 000-0000" />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="lead-company">Company</label>
+                    <input id="lead-company" name="company" type="text" value={form.company} onChange={handleChange} placeholder="Acme Inc." />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="lead-status">Status</label>
+                    <select id="lead-status" name="status" value={form.status} onChange={handleChange}>
+                      {LEAD_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="lead-source">Source</label>
+                    <select id="lead-source" name="source" value={form.source} onChange={handleChange}>
+                      {LEAD_SOURCES.map(({ value, label }) => <option key={value} value={value}>{label}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Tags</label>
+                  <TagInput tags={form.tags} onChange={(tags) => setForm((prev) => ({ ...prev, tags }))} />
+                </div>
+
+                <CustomFieldsEditor
+                  fields={form.customFields}
+                  onChange={(customFields) => setForm((prev) => ({ ...prev, customFields }))}
                 />
-                {errors.name && <span className="form-error">{errors.name}</span>}
-              </div>
-              <div className="form-group">
-                <label htmlFor="lead-email">Email *</label>
-                <input
-                  id="lead-email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="john@example.com"
-                  className={errors.email ? 'input--error' : ''}
-                  autoComplete="off"
-                />
-                {errors.email && <span className="form-error">{errors.email}</span>}
-              </div>
-            </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="lead-phone">Phone</label>
-                <input
-                  id="lead-phone"
-                  name="phone"
-                  type="tel"
-                  value={form.phone}
-                  onChange={handleChange}
-                  placeholder="+1 (555) 000-0000"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="lead-company">Company</label>
-                <input
-                  id="lead-company"
-                  name="company"
-                  type="text"
-                  value={form.company}
-                  onChange={handleChange}
-                  placeholder="Acme Inc."
-                />
-              </div>
-            </div>
+                <div className="form-group">
+                  <label htmlFor="lead-notes">Notes</label>
+                  <textarea
+                    id="lead-notes"
+                    name="notes"
+                    value={form.notes}
+                    onChange={handleChange}
+                    placeholder="Add any notes about this lead..."
+                    rows={3}
+                    maxLength={500}
+                  />
+                  <span className="char-count">{form.notes.length}/500</span>
+                </div>
+              </form>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="lead-status">Status</label>
-                <select id="lead-status" name="status" value={form.status} onChange={handleChange}>
-                  {LEAD_STATUSES.map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
+              <div className="modal__footer">
+                <button type="button" className="btn btn--ghost" onClick={onClose} disabled={loading}>Cancel</button>
+                <button type="submit" form="lead-form" className="btn btn--primary" disabled={loading}>
+                  {loading ? 'Saving…' : initialData ? 'Save Changes' : 'Create Lead'}
+                </button>
               </div>
-              <div className="form-group">
-                <label htmlFor="lead-source">Source</label>
-                <select id="lead-source" name="source" value={form.source} onChange={handleChange}>
-                  {LEAD_SOURCES.map(({ value, label }) => (
-                    <option key={value} value={value}>{label}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            </motion.div>
+          </motion.div>
 
-            <div className="form-group">
-              <label>Tags</label>
-              <TagInput
-                tags={form.tags}
-                onChange={(tags) => setForm((prev) => ({ ...prev, tags }))}
-              />
-            </div>
-
-            <CustomFieldsEditor
-              fields={form.customFields}
-              onChange={(customFields) => setForm((prev) => ({ ...prev, customFields }))}
+          {duplicates && (
+            <DuplicateWarningModal
+              duplicates={duplicates}
+              onConfirm={handleForceCreate}
+              onCancel={() => { setDuplicates(null); setPendingPayload(null); }}
+              loading={loading}
             />
-
-            <div className="form-group">
-              <label htmlFor="lead-notes">Notes</label>
-              <textarea
-                id="lead-notes"
-                name="notes"
-                value={form.notes}
-                onChange={handleChange}
-                placeholder="Add any notes about this lead..."
-                rows={3}
-                maxLength={500}
-              />
-              <span className="char-count">{form.notes.length}/500</span>
-            </div>
-          </form>
-
-          <div className="modal__footer">
-            <button type="button" className="btn btn--ghost" onClick={onClose} disabled={loading}>
-              Cancel
-            </button>
-            <button type="submit" form="lead-form" className="btn btn--primary" disabled={loading}>
-              {loading ? 'Saving…' : initialData ? 'Save Changes' : 'Create Lead'}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {duplicates && (
-        <DuplicateWarningModal
-          duplicates={duplicates}
-          onConfirm={handleForceCreate}
-          onCancel={() => { setDuplicates(null); setPendingPayload(null); }}
-          loading={loading}
-        />
+          )}
+        </>
       )}
-    </>
+    </AnimatePresence>
   );
 };
 

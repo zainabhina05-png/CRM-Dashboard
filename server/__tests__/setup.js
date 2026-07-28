@@ -1,17 +1,16 @@
 /**
- * Shared test helpers — in-memory MongoDB via mongoose directly,
- * no external mongodb-memory-server dep needed.
- * Tests hit the real routes via Supertest against a test DB.
+ * Shared test helpers — in-memory MongoDB via mongodb-memory-server.
+ * Zero external dependencies needed at runtime; binary is cached after first download.
  */
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
-// Use a dedicated test database so we never touch dev/prod data
-const TEST_DB = process.env.MONGO_URI_TEST || 'mongodb://localhost:27017/leadflow_test';
+let mongoServer;
 
 const connectTestDB = async () => {
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(TEST_DB);
-  }
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+  await mongoose.connect(uri);
 };
 
 const clearTestDB = async () => {
@@ -24,6 +23,7 @@ const clearTestDB = async () => {
 const closeTestDB = async () => {
   await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
+  if (mongoServer) await mongoServer.stop();
 };
 
 module.exports = { connectTestDB, clearTestDB, closeTestDB };

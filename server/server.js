@@ -30,8 +30,8 @@ if (process.env.VERCEL) {
     }
     next();
   });
-} else {
-  // Traditional server - connect immediately
+} else if (process.env.NODE_ENV !== 'test') {
+  // Traditional server — connect immediately (skip in test; setup.js owns the connection)
   connectDB();
 }
 
@@ -99,16 +99,17 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // Stricter rate limit on auth endpoints
+// Note: Enhanced progressive delay limiting is now handled in routes/auth.js
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: process.env.NODE_ENV === 'test' ? 10000 : 20, // unlimited in test
+  max: process.env.NODE_ENV === 'test' ? 10000 : 30, // Increased to account for progressive delays
   standardHeaders: true,
   legacyHeaders: false,
   message: { success: false, message: 'Too many authentication attempts, please try again later', data: null },
 });
-app.use('/api/auth/login',    authLimiter);
+// Apply basic rate limiting - enhanced security is in auth routes
 app.use('/api/auth/register', authLimiter);
-app.use('/api/auth/refresh',  authLimiter);
+// Login and refresh use progressive delay limiter in routes
 
 // Stricter rate limit on webhook endpoint
 const webhookLimiter = rateLimit({
@@ -129,8 +130,8 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({ extended: false }));
 
-// --- Routes ---
-app.use('/api/auth',      require('./routes/auth'));
+// --- Routes (with enhanced security middleware) ---
+app.use('/api/auth',      require('./routes/auth')); // Enhanced with progressive delays, session tracking, security logging
 app.use('/api/leads',     require('./routes/leads'));
 app.use('/api/reminders', require('./routes/reminders'));
 app.use('/api/webhooks',  require('./routes/webhooks'));
