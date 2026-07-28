@@ -11,7 +11,12 @@
     "deploy:setup": "echo 'Run npm run generate-secrets first, then deploy client and server separately to Vercel'",
     "test": "cd server && npm test",
     "test:deployment": "node scripts/test-deployment.js",
-    "seed": "cd server && node ../scripts/seed.js"
+    "test:seed": "node scripts/test-seed.js",
+    "seed": "node scripts/seed.js",
+    "seed:reset": "node scripts/seed.js reset"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@faker-js/faker": "^10.5.0"
+  }
 }
