@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { SOURCE_LABELS } from '../constants';
 
-const KanbanCard = ({ lead, onClick }) => {
+const KanbanCard = memo(({ lead, onClick }) => {
   const {
     attributes,
     listeners,
@@ -52,6 +53,6 @@ const KanbanCard = ({ lead, onClick }) => {
       </button>
     </article>
   );
-};
+});
 
 export default KanbanCard;

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import useLeads from '../hooks/useLeads';
 import AnalyticsCard from '../components/AnalyticsCard';
+import EmptyState from '../components/EmptyState';
 import { LEAD_STATUSES } from '../constants';
 import { pageVariants, statGrid, statCard } from '../styles/motion';
 
@@ -43,11 +44,19 @@ const DashboardPage = () => {
       </div>
 
       {error && (
-        <div className="alert alert--error" role="alert">
-          <span>{error}</span>
-        </div>
+        <EmptyState
+          variant="error"
+          title="Failed to load analytics"
+          message={error}
+          action={
+            <button className="btn btn--ghost btn--sm" onClick={fetchAnalytics}>
+              Try again
+            </button>
+          }
+        />
       )}
 
+      {!error && (
       <section aria-label="Analytics summary">
         <div className="analytics-summary">
           <div className="analytics-total">
@@ -59,9 +68,20 @@ const DashboardPage = () => {
         {loading ? (
           <div className="analytics-grid">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="analytics-card analytics-card--skeleton" />
+              <div key={i} className="analytics-card analytics-card--skeleton" aria-hidden="true" />
             ))}
           </div>
+        ) : analytics.total === 0 ? (
+          <EmptyState
+            icon="📊"
+            title="No leads yet"
+            message="Add your first lead to start tracking your pipeline."
+            action={
+              <Link to="/leads?new=true" className="btn btn--primary">
+                + Add your first lead
+              </Link>
+            }
+          />
         ) : (
           <motion.div
             className="analytics-grid"
@@ -81,6 +101,7 @@ const DashboardPage = () => {
           </motion.div>
         )}
       </section>
+      )}
 
       <section className="quick-actions" aria-label="Quick actions">
         <h2 className="section-title">Quick Actions</h2>

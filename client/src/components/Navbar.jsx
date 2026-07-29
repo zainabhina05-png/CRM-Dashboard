@@ -143,10 +143,16 @@ const NotificationBell = () => {
 const Navbar = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = useCallback(async () => {
     await logout();
   }, [logout]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
 
   const navLinks = [
     { path: '/dashboard', label: 'Dashboard' },
@@ -156,13 +162,73 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="navbar">
-      <Link to="/dashboard" className="navbar__brand">
-        <div className="navbar__logo-mark">⚡</div>
-        <span className="navbar__title">LeadFlow</span>
-      </Link>
+    <>
+      <header className="navbar">
+        <Link to="/dashboard" className="navbar__brand">
+          <div className="navbar__logo-mark">⚡</div>
+          <span className="navbar__title">LeadFlow</span>
+        </Link>
 
-      <nav className="navbar__links" aria-label="Main navigation">
+        <nav className="navbar__links" aria-label="Main navigation">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`navbar__link ${location.pathname === link.path ? 'navbar__link--active' : ''}`}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="navbar__user">
+          <NotificationBell />
+
+          <div className="navbar__avatar" aria-label={`Logged in as ${user?.name}`}>
+            {user?.name?.charAt(0).toUpperCase()}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+            <span className="navbar__username">{user?.name}</span>
+            {user?.role && (
+              <span
+                style={{
+                  fontSize: '0.65rem',
+                  fontWeight: 600,
+                  color: ROLE_COLORS[user.role] || 'var(--text-3)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                }}
+                aria-label={`Role: ${ROLE_LABELS[user.role] || user.role}`}
+              >
+                {ROLE_LABELS[user.role] || user.role}
+              </span>
+            )}
+          </div>
+
+          <button className="btn btn--ghost btn--sm" onClick={handleLogout} id="logout-btn">
+            Logout
+          </button>
+
+          {/* Mobile hamburger */}
+          <button
+            className="navbar__hamburger"
+            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen(v => !v)}
+          >
+            <span style={{ transform: mobileOpen ? 'rotate(45deg) translate(4px, 4px)' : 'none' }} />
+            <span style={{ opacity: mobileOpen ? 0 : 1 }} />
+            <span style={{ transform: mobileOpen ? 'rotate(-45deg) translate(4px, -4px)' : 'none' }} />
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile slide-down nav */}
+      <nav
+        className={`navbar__mobile-menu${mobileOpen ? ' navbar__mobile-menu--open' : ''}`}
+        aria-label="Mobile navigation"
+      >
         {navLinks.map((link) => (
           <Link
             key={link.path}
@@ -173,37 +239,7 @@ const Navbar = () => {
           </Link>
         ))}
       </nav>
-
-      <div className="navbar__user">
-        <NotificationBell />
-
-        <div className="navbar__avatar" aria-label={`Logged in as ${user?.name}`}>
-          {user?.name?.charAt(0).toUpperCase()}
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
-          <span className="navbar__username">{user?.name}</span>
-          {user?.role && (
-            <span
-              style={{
-                fontSize: '0.65rem',
-                fontWeight: 600,
-                color: ROLE_COLORS[user.role] || 'var(--text-3)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.04em',
-              }}
-              aria-label={`Role: ${ROLE_LABELS[user.role] || user.role}`}
-            >
-              {ROLE_LABELS[user.role] || user.role}
-            </span>
-          )}
-        </div>
-
-        <button className="btn btn--ghost btn--sm" onClick={handleLogout} id="logout-btn">
-          Logout
-        </button>
-      </div>
-    </header>
+    </>
   );
 };
 

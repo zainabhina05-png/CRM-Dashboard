@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { STATUS_COLORS, STATUS_ICONS, LEAD_STATUSES } from '../constants';
 
-const StatusBadge = ({ status, onChange, leadId }) => {
+const StatusBadge = memo(({ status, onChange, leadId }) => {
   if (onChange) {
     return (
       <select
@@ -8,7 +9,7 @@ const StatusBadge = ({ status, onChange, leadId }) => {
         value={status}
         style={{ '--status-color': STATUS_COLORS[status] }}
         onChange={(e) => onChange(leadId, e.target.value)}
-        aria-label={`Change status for lead`}
+        aria-label="Change status for lead"
       >
         {LEAD_STATUSES.map((s) => (
           <option key={s} value={s}>
@@ -27,6 +28,6 @@ const StatusBadge = ({ status, onChange, leadId }) => {
       {STATUS_ICONS[status]} {status}
     </span>
   );
-};
+});
 
 export default StatusBadge;
