@@ -150,8 +150,8 @@ app.post('/api/seed-demo', async (req, res) => {
   }
 
   try {
-    const bcrypt   = require('bcryptjs');
-    const { faker } = require('@faker-js/faker');
+    const bcrypt = require('bcryptjs');
+    const { faker } = await import('@faker-js/faker');
     const User     = require('./models/User');
     const Lead     = require('./models/Lead');
     const Reminder = require('./models/Reminder');
@@ -187,7 +187,7 @@ app.post('/api/seed-demo', async (req, res) => {
         name:`${first} ${last}`, email:`${first.toLowerCase()}.${last.toLowerCase()}@${co.toLowerCase().replace(/[^a-z0-9]/g,'')}.com`,
         phone:faker.phone.number(), company:co, status, source:faker.helpers.arrayElement(sources),
         tags:faker.helpers.arrayElements(['hot','vip','qualified'],{min:0,max:2}),
-        notes:faker.datatype.boolean(0.6)?faker.lorem.sentence():'',
+        notes: Math.random() < 0.6 ? faker.lorem.sentence() : '',
         owner:owner._id, activities:[{type:'created',content:'Seeded',createdBy:owner._id}],
       }));
     }
@@ -201,7 +201,7 @@ app.post('/api/seed-demo', async (req, res) => {
                     : type==='today' ? new Date()
                     : type==='near'  ? faker.date.soon({days:7})
                     :                  faker.date.soon({days:30});
-      const done = type==='past' && faker.datatype.boolean(0.5);
+      const done = type === 'past' && Math.random() < 0.5;
       await Reminder.create({ title:faker.helpers.arrayElement(['Follow up','Schedule demo','Send proposal']),
         dueDate, lead:lead._id, owner:owner._id, completed:done, completedAt:done?new Date():null });
     }
