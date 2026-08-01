@@ -4,9 +4,9 @@
 
 | Service | URL | Status |
 |---------|-----|--------|
-| Frontend | https://leadflow-crm-frontend.vercel.app | ✅ Live |
-| Backend API | https://leadflow-crm-backend.vercel.app | ✅ Live |
-| Health check | `GET /api/health` | → `{ success: true }` |
+| Frontend | https://client-cyan-rho.vercel.app | ✅ Live |
+| Backend API | https://crm-dashboard-seven-mu.vercel.app | ✅ Live |
+| Health check | `GET /api/health` → `{"success":true,"message":"Server is running"}` | ✅ Verified |
 
 ---
 
