@@ -8,7 +8,9 @@ Built by **@zainabhina05-png** &nbsp;·&nbsp; Deployed on **Vercel**
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://leadflow-crm-frontend.vercel.app)
 [![API](https://img.shields.io/badge/Backend_API-Vercel-000000?style=for-the-badge&logo=vercel)](https://leadflow-crm-backend.vercel.app)
 [![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-43_Passing-22c55e?style=for-the-badge&logo=jest)](server/__tests__)
+[![Tests](https://img.shields.io/badge/Tests-211_Passing-22c55e?style=for-the-badge&logo=jest)](server/__tests__)
+[![Coverage](https://img.shields.io/badge/Backend_Coverage-77.89%25-22c55e?style=for-the-badge)](server/coverage)
+[![CI](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088ff?style=for-the-badge&logo=github-actions)](/.github/workflows/ci.yml)
 
 </div>
 
@@ -26,8 +28,9 @@ LeadFlow is a production-ready **Customer Relationship Management (CRM)** platfo
 
 | Area | Details |
 |---|---|
-| **Auth & Security** | JWT access tokens (15 min) + httpOnly refresh tokens (7 days), rotation & reuse detection, RBAC (Admin / Manager / Sales Rep), rate-limited auth routes |
+| **Auth & Security** | JWT access tokens (15 min) + httpOnly refresh tokens (7 days), rotation & reuse detection, RBAC (Admin / Manager / Sales Rep), rate-limited auth routes, progressive delay brute-force protection, session tracking |
 | **Lead Management** | Full CRUD, tags, custom fields, activity timeline, duplicate detection & merge, lead source tracking |
+| **Pipeline Security** | Server-side IDOR protection, role-based stage locks, optimistic concurrency control, XSS sanitisation, audit trail on every move |
 | **Kanban Pipeline** | Drag-and-drop board powered by `@dnd-kit` with live stage transitions |
 | **Analytics Dashboard** | Per-status KPIs, pipeline funnel, source donut, win/loss donut, 12-month trend line (Recharts) |
 | **CSV Export** | Filtered lead exports for Admin & Manager roles |
@@ -220,12 +223,23 @@ Open **http://localhost:5173** — Vite proxies `/api/*` to `localhost:5000`.
 ## Running Tests
 
 ```bash
+# Backend — 133 tests (Jest + Supertest + mongodb-memory-server, no external DB needed)
 cd server
-npm test              # run all 43 tests
-npm run test:watch    # watch mode
+npm test                        # run all tests
+npm test -- --coverage          # with coverage report (threshold: 75% lines)
+
+# Frontend — 78 tests (Vitest + React Testing Library + MSW)
+cd client
+npm test                        # run all tests
+npm run test:coverage           # with coverage report
+
+# Seed demo data (requires MONGO_URI in server/.env)
+npm run seed                    # populate ~85 leads, 35 reminders, 3 users
+npm run seed:reset              # wipe demo data
+cat DEMO_CREDENTIALS.md         # view generated login details
 ```
 
-Tests use a dedicated `leadflow_test` database and clean up after each run.
+Tests use `mongodb-memory-server` — no external MongoDB instance required for CI.
 
 ---
 

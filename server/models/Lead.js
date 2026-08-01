@@ -116,6 +116,13 @@ leadSchema.index({ owner: 1, phone: 1 });
 leadSchema.index({ owner: 1, tags: 1 });
 leadSchema.index({ name: 'text', email: 'text', company: 'text' });
 
+// Performance — additional compound indexes for common access patterns
+leadSchema.index({ owner: 1, _id: 1 });                      // IDOR ownership checks
+leadSchema.index({ owner: 1, source: 1 });                    // source filter queries
+leadSchema.index({ owner: 1, createdAt: -1 });                // chronological list view
+leadSchema.index({ owner: 1, updatedAt: -1 });                // kanban (sorted by recent activity)
+leadSchema.index({ owner: 1, status: 1, updatedAt: -1 });     // pipeline + recency combined
+
 leadSchema.statics.LEAD_STATUSES = LEAD_STATUSES;
 leadSchema.statics.LEAD_SOURCES = LEAD_SOURCES;
 

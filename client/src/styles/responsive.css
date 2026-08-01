@@ -1,0 +1,346 @@
+/**
+ * LeadFlow CRM — Responsive Design System
+ *
+ * Mobile-first breakpoints using token values from tokens.css:
+ *   sm:  640px   — small tablets, large phones landscape
+ *   md:  768px   — tablets
+ *   lg: 1024px   — small desktops / large tablets landscape
+ *   xl: 1280px   — full desktops
+ *
+ * Strategy: mobile base styles, progressively enhanced upward.
+ * Kanban: always horizontally scrollable with column min-width.
+ * Tables: horizontal scroll on mobile, full columns on desktop.
+ * Navigation: hamburger drawer on mobile, inline on desktop.
+ */
+
+/* ─────────────────────────────────────────────────────────────
+   BASE (mobile-first defaults override existing globals)
+   ───────────────────────────────────────────────────────────── */
+
+/* Ensure content never overflows horizontally */
+html, body { overflow-x: hidden; }
+
+/* Stack page header on very small screens */
+.page__header {
+  flex-wrap: wrap;
+  gap: var(--space-3, 0.75rem);
+}
+
+/* Make quick-action grid wrap on mobile */
+.quick-actions__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3, 0.75rem);
+}
+
+/* Analytics grid: 2 columns on mobile */
+.analytics-grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* Leads toolbar: stack on mobile */
+.leads-toolbar {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.leads-toolbar .search-box {
+  width: 100%;
+}
+
+.filter-tabs {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  padding-bottom: var(--space-1, 0.25rem);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.filter-tabs::-webkit-scrollbar { display: none; }
+
+.pipeline-source-filter {
+  width: 100%;
+}
+
+/* Form rows stack on mobile */
+.form-row {
+  grid-template-columns: 1fr !important;
+}
+
+/* Table: full horizontal scroll */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lead-table {
+  min-width: 600px; /* Force scroll rather than squash */
+}
+
+/* Detail panel: full screen on mobile */
+.detail-panel {
+  max-width: 100% !important;
+  width: 100%;
+}
+
+/* Modal: full width on mobile with minimal margin */
+.modal {
+  max-width: calc(100vw - 1rem);
+  margin: 0.5rem;
+}
+
+/* Main content: tight padding on mobile */
+.main-content {
+  padding: var(--space-4, 1rem) var(--space-3, 0.75rem);
+}
+
+/* Kanban: always horizontal scroll with minimum column width */
+.kanban-board {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--space-6, 1.5rem);
+  /* Scroll snapping for better mobile UX */
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: var(--glass-border-2, rgba(255,255,255,.12)) transparent;
+}
+
+.kanban-column {
+  flex: 0 0 min(260px, 80vw); /* On mobile: 80% of viewport */
+  scroll-snap-align: start;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NAVBAR — mobile hamburger
+   ───────────────────────────────────────────────────────────── */
+
+/* Mobile: hide nav links by default — show in mobile-menu */
+.navbar__links {
+  display: none;
+}
+
+.navbar {
+  padding: 0 var(--space-4, 1rem);
+  position: relative;
+}
+
+/* Hamburger button — shown only on mobile */
+.navbar__hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-2, 0.5rem);
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.navbar__hamburger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text-2, #8fa8cc);
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+/* Mobile nav drawer */
+.navbar__mobile-menu {
+  display: none;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  background: var(--bg-2, #0a1628);
+  border-bottom: 1px solid var(--glass-border, rgba(255,255,255,.08));
+  padding: var(--space-3, 0.75rem);
+  z-index: 99;
+  flex-direction: column;
+  gap: var(--space-1, 0.25rem);
+  box-shadow: 0 8px 24px rgba(0,0,0,.4);
+}
+
+.navbar__mobile-menu.navbar__mobile-menu--open {
+  display: flex;
+}
+
+.navbar__mobile-menu .navbar__link {
+  padding: var(--space-3, 0.75rem) var(--space-4, 1rem);
+  border-radius: var(--radius, 6px);
+  font-size: 0.9rem;
+}
+
+/* Auth area: compact on mobile */
+.navbar__username { display: none; }
+
+/* ─────────────────────────────────────────────────────────────
+   sm: 640px — large phones landscape / small tablets
+   ───────────────────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .main-content {
+    padding: var(--space-6, 1.5rem) var(--space-4, 1rem);
+  }
+
+  .quick-actions__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .analytics-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .kanban-column {
+    flex: 0 0 240px;
+  }
+
+  .leads-toolbar {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .leads-toolbar .search-box {
+    flex: 1;
+    min-width: 200px;
+    width: auto;
+  }
+
+  .pipeline-source-filter {
+    width: auto;
+  }
+
+  .navbar__username { display: inline; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   md: 768px — tablets
+   ───────────────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  /* Show desktop nav links, hide hamburger */
+  .navbar__links {
+    display: flex;
+  }
+
+  .navbar__hamburger {
+    display: none;
+  }
+
+  .navbar__mobile-menu {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: var(--space-6, 1.5rem) var(--space-6, 1.5rem);
+  }
+
+  .analytics-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .modal {
+    max-width: 500px;
+    margin: auto;
+  }
+
+  .detail-panel {
+    max-width: 420px !important;
+    width: 420px;
+  }
+
+  .kanban-column {
+    flex: 0 0 260px;
+  }
+
+  .leads-toolbar {
+    flex-wrap: nowrap;
+  }
+
+  .filter-tabs {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   lg: 1024px — desktops
+   ───────────────────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .main-content {
+    padding: var(--space-8, 2rem) var(--space-6, 1.5rem);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .analytics-grid {
+    grid-template-columns: repeat(6, 1fr) !important; /* All 6 status cards in one row */
+  }
+
+  .quick-actions__grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .kanban-column {
+    flex: 0 0 260px;
+    max-height: calc(100vh - 200px);
+  }
+
+  /* Page header: don't wrap */
+  .page__header {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   xl: 1280px — wide desktops
+   ───────────────────────────────────────────────────────────── */
+@media (min-width: 1280px) {
+  .main-content {
+    padding: var(--space-8, 2rem) var(--space-8, 2rem);
+  }
+
+  .kanban-column {
+    flex: 0 0 280px; /* Slightly wider columns on large screens */
+  }
+
+  .analytics-grid {
+    gap: var(--space-4, 1rem) !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Print styles
+   ───────────────────────────────────────────────────────────── */
+@media print {
+  .navbar,
+  .btn,
+  .pagination,
+  .modal-overlay {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: 0;
+    max-width: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Touch device optimizations
+   ───────────────────────────────────────────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger tap targets */
+  .btn { min-height: 44px; }
+  .navbar__link { min-height: 44px; padding: 0.75rem 1rem; }
+  .filter-tab { min-height: 36px; }
+  .pagination__btn { width: 36px; height: 36px; }
+
+  /* Remove hover-only effects */
+  .glass-card:hover { transform: none; }
+  .btn--primary:hover { transform: none; filter: none; }
+}

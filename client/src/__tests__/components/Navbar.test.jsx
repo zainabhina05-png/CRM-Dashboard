@@ -42,17 +42,23 @@ describe('Navbar', () => {
 
   it('renders all four nav links', () => {
     renderNavbar();
-    expect(screen.getByRole('link', { name: 'Dashboard' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Pipeline' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Leads' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Analytics' })).toBeInTheDocument();
+    // Both desktop and mobile menus render the same links — use getAllBy and assert >= 1
+    expect(screen.getAllByRole('link', { name: 'Dashboard' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('link', { name: 'Pipeline' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('link', { name: 'Leads' }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole('link', { name: 'Analytics' }).length).toBeGreaterThanOrEqual(1);
   });
 
   it('marks the current route link as active', () => {
     renderNavbar('admin', '/pipeline');
-    const pipelineLink = screen.getByRole('link', { name: 'Pipeline' });
-    expect(pipelineLink).toHaveClass('navbar__link--active');
-    expect(screen.getByRole('link', { name: 'Dashboard' })).not.toHaveClass('navbar__link--active');
+    // The desktop navbar__links nav renders the active link
+    const allPipelineLinks = screen.getAllByRole('link', { name: 'Pipeline' });
+    const activeLink = allPipelineLinks.find(l => l.classList.contains('navbar__link--active'));
+    expect(activeLink).toBeDefined();
+
+    // None of the Dashboard links should be active
+    const dashLinks = screen.getAllByRole('link', { name: 'Dashboard' });
+    dashLinks.forEach(l => expect(l).not.toHaveClass('navbar__link--active'));
   });
 
   it('shows the user first initial in avatar', () => {
