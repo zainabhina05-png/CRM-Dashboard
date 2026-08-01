@@ -12,8 +12,8 @@
     "test": "cd server && npm test",
     "test:deployment": "node scripts/test-deployment.js",
     "test:seed": "node scripts/test-seed.js",
-    "seed": "node scripts/seed.js",
-    "seed:reset": "node scripts/seed.js reset"
+    "seed": "cd server && node seed.js",
+    "seed:reset": "cd server && node seed.js reset"
   },
   "private": true,
   "devDependencies": {

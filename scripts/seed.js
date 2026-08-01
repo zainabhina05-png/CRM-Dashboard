@@ -10,8 +10,12 @@
 const path = require('path');
 const fs = require('fs');
 
-// Load server dependencies
-require('dotenv').config({ path: path.join(__dirname, '../server/.env') });
+// Allow custom env file via SEED_ENV_FILE env var — used when seeding against production Atlas
+const envFile = process.env.SEED_ENV_FILE
+  ? path.resolve(process.env.SEED_ENV_FILE)
+  : path.join(__dirname, '../server/.env');
+
+require('dotenv').config({ path: envFile });
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
