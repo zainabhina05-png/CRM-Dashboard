@@ -71,3 +71,16 @@ desktop.ini
 .tmp/
 coverage/
 .nyc_output/
+
+.vercel
+.env*
+
+# ── Kiro IDE files (not for source control) ─────────────────
+.kiro/
+
+# ── Generated credential files (contain demo passwords) ─────
+DEMO_CREDENTIALS.md
+
+# ── Vercel link metadata ─────────────────────────────────────
+server/.vercel/
+client/.vercel/
