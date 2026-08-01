@@ -141,63 +141,6 @@ app.get('/api/health', (_req, res) => {
   res.status(200).json({ success: true, message: 'Server is running', data: null });
 });
 
-// ── One-shot seed endpoint — protected by SEED_TOKEN env var ──
-app.post('/api/seed-demo', async (req, res) => {
-  const expectedToken = process.env.SEED_TOKEN;
-  if (!expectedToken || req.query.token !== expectedToken) {
-    return res.status(401).json({ success: false, message: 'Unauthorized' });
-  }
-  try {
-    const { faker } = await import('@faker-js/faker');
-    const User     = require('./models/User');
-    const Lead     = require('./models/Lead');
-    const Reminder = require('./models/Reminder');
-    faker.seed(42);
-
-    await Promise.all([Reminder.deleteMany({}), Lead.deleteMany({}), User.deleteMany({})]);
-
-    // Let the User model pre('save') hook hash passwords — do NOT pre-hash here
-    const users = await Promise.all([
-      User.create({ name:'Admin Demo User',   email:'admin@leadflow-demo.com',   password:'demo123!', role:'admin'     }),
-      User.create({ name:'Manager Demo User', email:'manager@leadflow-demo.com', password:'demo123!', role:'manager'   }),
-      User.create({ name:'Sales Rep Demo',    email:'sales@leadflow-demo.com',   password:'demo123!', role:'sales_rep' }),
-    ]);
-
-    const sources = ['website','referral','social_media','paid_ads','cold_call','other'];
-    const dist    = { New:0.25,Contacted:0.20,Qualified:0.15,Proposal:0.10,Won:0.15,Lost:0.15 };
-    const leads   = [];
-    for (let i = 0; i < 85; i++) {
-      const owner = faker.helpers.arrayElement([users[2],users[2],users[2],users[1],users[0]]);
-      let r=Math.random(),cum=0,status='New';
-      for (const [s,w] of Object.entries(dist)) { cum+=w; if(r<=cum){status=s;break;} }
-      const first=faker.person.firstName(),last=faker.person.lastName(),co=faker.company.name();
-      leads.push(await Lead.create({
-        name:`${first} ${last}`,
-        email:`${first.toLowerCase()}.${last.toLowerCase()}@${co.toLowerCase().replace(/[^a-z0-9]/g,'')}.com`,
-        phone:faker.phone.number(), company:co, status, source:faker.helpers.arrayElement(sources),
-        tags:faker.helpers.arrayElements(['hot','vip','qualified'],{min:0,max:2}),
-        notes: Math.random()<0.6 ? faker.lorem.sentence() : '',
-        owner:owner._id,
-        activities:[{type:'created',content:'Seeded lead',createdBy:owner._id}],
-      }));
-    }
-
-    for (let i=0; i<35; i++) {
-      const lead  = faker.helpers.arrayElement(leads);
-      const owner = users.find(u=>u._id.toString()===lead.owner.toString()) || users[2];
-      const type  = faker.helpers.arrayElement(['past','today','near','future']);
-      const due   = type==='past'?faker.date.recent({days:14}):type==='today'?new Date():type==='near'?faker.date.soon({days:7}):faker.date.soon({days:30});
-      const done  = type==='past' && Math.random()<0.5;
-      await Reminder.create({ title:faker.helpers.arrayElement(['Follow up','Schedule demo','Send proposal']), dueDate:due, lead:lead._id, owner:owner._id, completed:done, completedAt:done?new Date():null });
-    }
-
-    const dist2={}; Lead.LEAD_STATUSES.forEach(s=>{dist2[s]=leads.filter(l=>l.status===s).length;});
-    res.json({ success:true, message:'Seeded successfully', data:{ users:users.map(u=>({role:u.role,email:u.email})), leads:leads.length, distribution:dist2 } });
-  } catch(err) {
-    res.status(500).json({ success:false, message:err.message, data:null });
-  }
-});
-
 // Debug endpoint — shows env var presence (no values exposed)
 app.get('/api/debug', (_req, res) => {
   res.json({
