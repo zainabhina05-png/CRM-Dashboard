@@ -1,193 +1,173 @@
 <div align="center">
 
-<h1>LeadFlow CRM</h1>
+# LeadFlow CRM
 
-**A full-stack MERN CRM for modern lead pipeline management**  
-Built by **@zainabhina05-png** &nbsp;·&nbsp; Deployed on **Vercel**
+**Full-stack MERN Customer Relationship Management platform**  
+Drag-and-drop pipeline · Real-time analytics · Enterprise-grade security
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel)](https://client-cyan-rho.vercel.app)
-[![API](https://img.shields.io/badge/Backend_API-Vercel-000000?style=for-the-badge&logo=vercel)](https://crm-dashboard-seven-mu.vercel.app)
-[![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-211_Passing-22c55e?style=for-the-badge&logo=jest)](server/__tests__)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-client--cyan--rho.vercel.app-000?style=for-the-badge&logo=vercel)](https://client-cyan-rho.vercel.app)
+[![API](https://img.shields.io/badge/Backend_API-crm--dashboard--seven--mu.vercel.app-000?style=for-the-badge&logo=vercel)](https://crm-dashboard-seven-mu.vercel.app)
+[![Tests](https://img.shields.io/badge/Tests-211_passing-22c55e?style=for-the-badge&logo=jest)](server/__tests__)
 [![Coverage](https://img.shields.io/badge/Backend_Coverage-77.89%25-22c55e?style=for-the-badge)](server/coverage)
-[![CI](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088ff?style=for-the-badge&logo=github-actions)](/.github/workflows/ci.yml)
+[![CI](https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088ff?style=for-the-badge&logo=github-actions)](.github/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-MIT-6366f1?style=for-the-badge)](LICENSE)
 
 </div>
 
 ---
 
-## Live URLs
+## What is LeadFlow?
 
-| Service | URL |
-|---------|-----|
-| **Frontend** | https://client-cyan-rho.vercel.app |
-| **Backend API** | https://crm-dashboard-seven-mu.vercel.app |
-| **Health Check** | https://crm-dashboard-seven-mu.vercel.app/api/health |
+LeadFlow is a production-ready CRM built on the MERN stack (MongoDB · Express · React · Node.js). It gives sales teams a complete pipeline for managing leads from first contact to closed deal, with a Kanban board, rich analytics, reminder scheduling, and role-based access control baked in from day one.
+
+The UI follows a **Solar Ocean glassmorphism** design language — deep navy, sunflower gold, and ocean teal — built with Framer Motion for purposeful page and element transitions, and a mobile-first responsive layout that works from 320 px to 4 K.
 
 ---
 
+## Live Demo
 
-
-LeadFlow is a production-ready **Customer Relationship Management (CRM)** platform I designed and built from scratch. It features a stunning **Solar Ocean glassmorphism UI**, a drag-and-drop Kanban pipeline, real-time analytics, automated reminders, and enterprise-grade security — all in a monorepo you can deploy in under 15 minutes.
-
-> **Built entirely by me** — from architecture decisions to UI polish — as a showcase of full-stack engineering with React, Node.js, MongoDB, and modern DevOps.
-
----
-
-## Feature Highlights
-
-| Area | Details |
+| | |
 |---|---|
-| **Auth & Security** | JWT access tokens (15 min) + httpOnly refresh tokens (7 days), rotation & reuse detection, RBAC (Admin / Manager / Sales Rep), rate-limited auth routes, progressive delay brute-force protection, session tracking |
-| **Lead Management** | Full CRUD, tags, custom fields, activity timeline, duplicate detection & merge, lead source tracking |
-| **Pipeline Security** | Server-side IDOR protection, role-based stage locks, optimistic concurrency control, XSS sanitisation, audit trail on every move |
-| **Kanban Pipeline** | Drag-and-drop board powered by `@dnd-kit` with live stage transitions |
-| **Analytics Dashboard** | Per-status KPIs, pipeline funnel, source donut, win/loss donut, 12-month trend line (Recharts) |
-| **CSV Export** | Filtered lead exports for Admin & Manager roles |
-| **Reminders** | Per-lead follow-up tasks with due dates, in-app notification bell, email alerts via Nodemailer |
-| **Webhooks** | Inbound `POST /api/webhooks/leads` for Facebook Lead Ads / Zapier with HMAC-SHA256 verification |
-| **Logging** | Structured Winston logs (colourised dev, JSON files in prod), HTTP via Morgan |
-| **Tests** | 43 Jest + Supertest tests covering auth, leads CRUD, RBAC, and utilities |
+| **App** | https://client-cyan-rho.vercel.app |
+| **API health** | https://crm-dashboard-seven-mu.vercel.app/api/health |
+
+### Demo accounts (pre-seeded)
+
+| Role | Email | Password | Access |
+|------|-------|----------|--------|
+| Admin | `admin@leadflow-demo.com` | `demo123!` | Full system — users, all leads, delete, unlock pipeline |
+| Manager | `manager@leadflow-demo.com` | `demo123!` | Team view, CSV export, close deals Won/Lost |
+| Sales Rep | `sales@leadflow-demo.com` | `demo123!` | Own leads, full pipeline except closing |
+
+---
+
+## Features
+
+### Lead Management
+- **Full CRUD** — create, edit, delete leads with duplicate detection before save
+- **Custom fields** — up to 10 key/value pairs per lead
+- **Tags** — up to 20 tags, filterable
+- **Activity timeline** — every note, call, email, meeting, and status change logged
+- **Lead sources** — website, referral, social media, paid ads, cold call, other
+- **Search + filter** — full-text search, status, source, and tag filters simultaneously
+
+### Kanban Pipeline
+- **Drag-and-drop** board powered by `@dnd-kit` with smooth `framer-motion` animations
+- **6 pipeline stages** — New → Contacted → Qualified → Proposal → Won / Lost
+- **Server-side security on every move** — ownership verified, IDOR protection, role-based stage locks, optimistic concurrency (`__v`), XSS sanitisation, audit trail
+
+### Analytics Dashboard
+- Per-status KPI cards with animated progress bars
+- Pipeline funnel, lead-source donut, win/loss donut
+- 12-month trend line chart (Recharts)
+- All charts load with staggered Framer Motion entrance animations
+
+### Authentication & Security
+- **JWT access tokens** (15 min) + **httpOnly refresh tokens** (7 days)
+- **Automatic token rotation** on every refresh; **reuse detection** revokes all sessions
+- **Progressive delay** brute-force protection (1 s → 5 s → 15 s → 30 s)
+- **Session tracking** — per-user session store with IP + user-agent; `GET /api/auth/sessions`
+- **RBAC** — three roles (admin / manager / sales_rep) enforced server-side on every route
+- **Helmet** security headers, strict CORS, rate limiting on all sensitive endpoints
+
+### Reminders & Notifications
+- Per-lead follow-up tasks with due dates
+- Notification bell in navbar with overdue / due-today counts
+- Email alerts via Nodemailer SMTP (optional — degrades gracefully to console)
+
+### CSV Export & Webhooks
+- Filtered CSV export (manager + admin only)
+- Inbound webhook `POST /api/webhooks/leads` — Facebook Lead Ads / Zapier compatible, HMAC-SHA256 verified
+
+### Responsive UI
+- Mobile-first — hamburger nav, stacked forms, scroll-snap Kanban on small screens
+- Tablet and desktop layouts progressively enhanced
+- `prefers-reduced-motion` respected via `MotionConfig`
 
 ---
 
 ## Tech Stack
 
-```
-Frontend   React 19 · Vite 6 · React Router 7 · Axios · @dnd-kit · Recharts · Vanilla CSS
-Backend    Node.js · Express 4 · MongoDB (Mongoose 8) · JWT · bcryptjs · Nodemailer
-Security   Helmet · CORS · express-rate-limit · cookie-parser · express-validator · HMAC
-Testing    Jest 29 · Supertest · Nodemon · Winston · Morgan
-Hosting    Vercel (frontend + backend) · MongoDB Atlas (database) — 100% free!
-```
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 19 · Vite 8 · React Router 7 · Framer Motion 11 |
+| **State** | React Context + custom hooks (no Redux) |
+| **Drag & Drop** | @dnd-kit/core + @dnd-kit/sortable |
+| **Charts** | Recharts 3 |
+| **HTTP Client** | Axios with silent JWT refresh interceptor |
+| **Backend** | Node.js · Express 4 |
+| **Database** | MongoDB · Mongoose 8 |
+| **Auth** | jsonwebtoken · bcryptjs · cookie-parser |
+| **Security** | Helmet · express-rate-limit · express-validator |
+| **Email** | Nodemailer |
+| **Logging** | Winston (structured JSON in prod) · Morgan |
+| **Tests** | Jest 29 · Supertest · mongodb-memory-server · Vitest · React Testing Library · MSW |
+| **CI/CD** | GitHub Actions (5-stage pipeline) |
+| **Hosting** | Vercel (frontend + backend serverless) · MongoDB Atlas |
 
 ---
 
 ## Project Structure
 
 ```
-project/
-├── client/                    React + Vite frontend (Vercel)
+CRM-Dashboard/
+├── client/                        React + Vite frontend
 │   ├── src/
-│   │   ├── components/        Shared UI components (Kanban, LeadTable, etc.)
-│   │   ├── context/           AuthContext, ToastContext
-│   │   ├── hooks/             useLeads, useReminders, useRole, useDebounce
-│   │   ├── pages/             Dashboard, Leads, Pipeline, Analytics
-│   │   └── services/          api.js (axios), leadService, authService
-│   ├── .env.example           ← copy to .env and fill in
+│   │   ├── components/            Navbar, KanbanBoard, LeadTable, …
+│   │   ├── pages/                 Dashboard, Leads, Pipeline, Analytics, Login, Register
+│   │   ├── context/               AuthContext, ToastContext
+│   │   ├── hooks/                 useLeads, useReminders, useRole, useDebounce
+│   │   ├── services/              api.js (axios + refresh interceptor), leadService, …
+│   │   ├── styles/                tokens.css, responsive.css, motion.js
+│   │   └── __tests__/             78 tests (Vitest + RTL + MSW)
 │   └── vite.config.js
 │
-├── server/                    Express + MongoDB backend (Vercel Serverless)
-│   ├── __tests__/             43 Jest + Supertest tests
-│   ├── config/                db.js (MongoDB connection with caching)
-│   ├── middleware/            auth, authorize, errorHandler, validators
-│   ├── models/                User, Lead, Reminder
-│   ├── routes/                auth, leads, reminders, webhooks
-│   ├── utils/                 logger, emailService, reminderScheduler, duplicateDetection
-│   ├── .env.example           ← copy to .env — never commit .env
-│   ├── server.js              Main Express app
-│   └── vercel.json            Vercel serverless config
+├── server/                        Express + MongoDB backend
+│   ├── routes/                    auth, leads, reminders, webhooks
+│   ├── models/                    User, Lead, Reminder
+│   ├── middleware/                auth, authorize, pipelineSecurity, authSecurity, validators
+│   ├── config/                    db.js (connection pooling + serverless caching)
+│   ├── utils/                     logger, emailService, reminderScheduler, duplicateDetection
+│   └── __tests__/                 133 tests across 9 suites (Jest + Supertest)
 │
+├── scripts/                       generate-secrets.js, seed.js
+├── .github/workflows/             ci.yml (lint → test → build → deploy)
 └── README.md
 ```
 
 ---
 
-## Deployment Guide
+## Running Tests
 
-> **100% Free Hosting:** Both frontend and backend deployed on Vercel with MongoDB Atlas — no credit card required!
+```bash
+# Backend — 133 tests, zero external dependencies (mongodb-memory-server)
+cd server
+npm test                      # run all
+npm test -- --coverage        # with coverage report (threshold: 75% lines enforced)
 
-### Step 1 — MongoDB Atlas
+# Frontend — 78 tests (Vitest + React Testing Library + MSW)
+cd client
+npm test                      # run all
+npm run test:coverage         # with coverage report
+```
 
-1. Go to [cloud.mongodb.com](https://cloud.mongodb.com) → create a **free M0 cluster**
-2. **Database Access** → create a user with username + password
-3. **Network Access** → Add `0.0.0.0/0` (allow all IPs)
-4. Click **Connect** → **Drivers** → copy the connection string:
-   ```
-   mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/leadflow?retryWrites=true&w=majority
-   ```
-5. Save this securely — you'll need it for Step 2
-
----
-
-### Step 2 — Deploy Backend on Vercel
-
-1. Go to [vercel.com](https://vercel.com) → **Add New → Project** → import your GitHub repo
-2. Configure:
-
-   | Setting | Value |
-   |---|---|
-   | **Framework Preset** | `Other` |
-   | **Root Directory** | `server` |
-   | **Build Command** | (leave empty) |
-   | **Output Directory** | (leave empty) |
-
-3. Add environment variables in **Settings → Environment Variables**:
-
-   | Variable | Example Value | Notes |
-   |---|---|---|
-   | `MONGO_URI` | `mongodb+srv://user:****@cluster.mongodb.net/leadflow` | From Step 1 (keep secret!) |
-   | `JWT_SECRET` | `a1b2c3d4...` | Generate with: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` |
-   | `JWT_REFRESH_SECRET` | `e5f6g7h8...` | Generate a different random string |
-   | `NODE_ENV` | `production` | |
-   | `CLIENT_ORIGIN` | (leave empty for now) | Set after Step 3 |
-
-4. Click **Deploy** → save your backend URL (e.g., `https://your-backend.vercel.app`)
-
----
-
-### Step 3 — Deploy Frontend on Vercel
-
-1. Go to [vercel.com](https://vercel.com) → **Add New → Project** → import the same repo again
-2. Configure:
-
-   | Setting | Value |
-   |---|---|
-   | **Framework Preset** | `Vite` |
-   | **Root Directory** | `client` |
-   | **Build Command** | `npm run build` |
-   | **Output Directory** | `dist` |
-
-3. Add environment variable:
-
-   | Variable | Value |
-   |---|---|
-   | `VITE_API_BASE_URL` | `https://your-backend.vercel.app/api` (from Step 2) |
-
-4. Click **Deploy** → save your frontend URL (e.g., `https://your-frontend.vercel.app`)
-
----
-
-### Step 4 — Connect Frontend & Backend (CORS)
-
-Go back to your **backend** Vercel project:
-
-1. **Settings → Environment Variables**
-2. Update `CLIENT_ORIGIN` to your frontend URL:
-   ```
-   CLIENT_ORIGIN = https://your-frontend.vercel.app
-   ```
-3. **Deployments → Redeploy** (click ⋯ menu on latest deployment → Redeploy)
-
----
-
-### Step 5 — Verify Everything Works
-
-1. Open your frontend URL
-2. **Register** a new user account
-3. **Log in** and create a test lead
-4. Check **MongoDB Atlas → Browse Collections** — you should see your data
-
-🎉 Your CRM is now live and 100% free!
+Test suites cover:
+- Auth: register, login, refresh, logout, token reuse detection, sessions
+- Leads: full CRUD, pagination, filtering, export, analytics, kanban
+- Reminders: all 5 endpoints + validation + ownership
+- Webhooks: unsigned dev mode, HMAC signed, duplicate detection, field normalisation
+- Pipeline security: G1–G8 (IDOR, stage locks, role restrictions, concurrency, sanitisation)
+- Auth security: progressive delay, session tracking, security event logging
+- Error handler: all 7 error type branches
+- Frontend: ProtectedRoute, LoginPage, RegisterPage, Navbar, TagInput, Pagination, StatusBadge, hooks, context
 
 ---
 
 ## Local Development
 
 ### Prerequisites
-
 - Node.js 18+
-- MongoDB running locally or a MongoDB Atlas URI
+- MongoDB Atlas URI (or local `mongod`)
 
 ### Setup
 
@@ -196,170 +176,154 @@ Go back to your **backend** Vercel project:
 git clone https://github.com/zainabhina05-png/CRM-Dashboard.git
 cd CRM-Dashboard
 
-# 2. Server
+# 2. Backend
 cd server
-npm install
 cp .env.example .env
-# Edit server/.env — fill in MONGO_URI, JWT_SECRET, JWT_REFRESH_SECRET
-
-# 3. Client
-cd ../client
+# Fill in MONGO_URI, JWT_SECRET, JWT_REFRESH_SECRET
 npm install
-cp .env.example .env
-# VITE_API_BASE_URL=http://localhost:5000/api is fine for local dev
+npm run dev          # Express on :5000
 
-# 4. Start (two terminals)
-cd server && npm run dev      # Express on :5000
-cd client && npm run dev      # Vite on :5173
-```
-
-Open **http://localhost:5173** — Vite proxies `/api/*` to `localhost:5000`.
-
----
-
-## Security & Privacy
-
-> This repo follows best practices for secret management.
-
-- `.env` files are gitignored and **never committed** to this repo
-- Only `.env.example` template files (with safe placeholder values) are tracked
-- `node_modules/` and `dist/` build artifacts are excluded
-- JWT secrets are always loaded from environment variables — never hardcoded
-- Test files use throwaway `test_secret` values only
-- **When deploying:** generate fresh production secrets — never reuse dev values
-
----
-
-## Running Tests
-
-```bash
-# Backend — 133 tests (Jest + Supertest + mongodb-memory-server, no external DB needed)
-cd server
-npm test                        # run all tests
-npm test -- --coverage          # with coverage report (threshold: 75% lines)
-
-# Frontend — 78 tests (Vitest + React Testing Library + MSW)
+# 3. Frontend (new terminal)
 cd client
-npm test                        # run all tests
-npm run test:coverage           # with coverage report
+cp .env.example .env
+# VITE_API_BASE_URL=http://localhost:5000/api
+npm install
+npm run dev          # Vite on :5173
 
-# Seed demo data (requires MONGO_URI in server/.env)
-npm run seed                    # populate ~85 leads, 35 reminders, 3 users
-npm run seed:reset              # wipe demo data
-cat DEMO_CREDENTIALS.md         # view generated login details
+# 4. Seed demo data
+cd ..
+npm run seed         # Creates 3 users + 85 leads + 35 reminders
 ```
 
-Tests use `mongodb-memory-server` — no external MongoDB instance required for CI.
+Demo credentials are printed to the terminal when the seed finishes.
 
 ---
 
-## Environment Variables Reference
+## Deployment (Vercel)
 
-### `server/.env`
+### Generate secrets first
+```bash
+npm run generate-secrets
+# Prints JWT_SECRET, JWT_REFRESH_SECRET, WEBHOOK_SECRET to use below
+```
 
-| Variable | Required | Description |
-|---|---|---|
-| `MONGO_URI` | Yes | MongoDB connection string |
-| `JWT_SECRET` | Yes | Secret for access tokens — use a long random string |
-| `JWT_EXPIRES_IN` | | Token TTL (default: `15m`) |
-| `JWT_REFRESH_SECRET` | Yes | Refresh token secret — must differ from `JWT_SECRET` |
-| `JWT_REFRESH_EXPIRES_IN` | | Refresh TTL (default: `7d`) |
-| `PORT` | | Server port (default: `5000`) |
-| `NODE_ENV` | | `development` / `production` / `test` |
-| `CLIENT_ORIGIN` | | Frontend URL for CORS (e.g. `https://your-app.vercel.app`) |
-| `SMTP_HOST` | | SMTP hostname (leave blank = console stub in dev) |
-| `SMTP_PORT` | | SMTP port (default: `587`) |
-| `SMTP_SECURE` | | `true` for port 465, `false` otherwise |
-| `SMTP_USER` | | SMTP username / email |
-| `SMTP_PASS` | | SMTP password / app password |
-| `SMTP_FROM` | | From address in emails |
-| `WEBHOOK_SECRET` | | HMAC secret for inbound webhooks |
-| `WEBHOOK_OWNER_ID` | | MongoDB `_id` of user who owns webhook leads |
+### Backend
+1. Import `server/` as a Vercel project, Framework Preset → **Other**, root directory → `server`
+2. Set environment variables in Vercel Settings:
 
-### `client/.env`
+| Variable | Description |
+|----------|-------------|
+| `MONGO_URI` | MongoDB Atlas connection string |
+| `JWT_SECRET` | 64-char random (from generate-secrets) |
+| `JWT_REFRESH_SECRET` | Different 64-char random |
+| `NODE_ENV` | `production` |
+| `CLIENT_ORIGIN` | Exact frontend URL (set after step 3) |
 
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_BASE_URL` | Yes | Full backend URL e.g. `https://your-backend.vercel.app/api` |
+### Frontend
+1. Import `client/` as a separate Vercel project, Framework Preset → **Vite**, root directory → `client`
+2. Set `VITE_API_BASE_URL=https://your-backend.vercel.app/api`
+
+Full walkthrough: [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ---
 
-## Important Notes
+## API Reference
 
-### Serverless Backend Limitations
-
-Since the backend runs on Vercel's serverless functions:
-
-- ✅ **Core API works perfectly 24/7** — login, registration, leads CRUD, analytics
-- ⚠️ **Reminder scheduler doesn't run continuously** — serverless functions spin down when idle
-- 💡 **For production:** Use Vercel Cron Jobs or external services (EasyCron) to trigger reminder checks
-
-This is the standard tradeoff for free serverless hosting and doesn't impact the portfolio demo experience.
-
----
-
-## Webhook Integration
-
-External tools (Zapier, Facebook Lead Ads, custom forms) can POST leads directly:
-
-```
-POST /api/webhooks/leads
-Content-Type: application/json
-X-LeadFlow-Signature: sha256=<HMAC-SHA256 of body using WEBHOOK_SECRET>
-
-{
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "phone": "+1 555 000 0000",
-  "company": "Acme Corp",
-  "source": "website",
-  "tags": ["inbound"],
-  "notes": "Came from landing page"
-}
-```
-
-**Generate HMAC signature:**
-```js
-const crypto = require('crypto');
-const body = JSON.stringify(payload);
-const sig = 'sha256=' + crypto.createHmac('sha256', WEBHOOK_SECRET).update(body).digest('hex');
-```
-
-> Signature check is skipped in development for easy local testing.
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/auth/register` | — | Register new user |
+| `POST` | `/api/auth/login` | — | Login, returns access token + sets refresh cookie |
+| `POST` | `/api/auth/refresh` | cookie | Silent token refresh |
+| `POST` | `/api/auth/logout` | JWT | Revoke session |
+| `GET` | `/api/auth/me` | JWT | Current user profile |
+| `GET` | `/api/auth/sessions` | JWT | List active sessions |
+| `DELETE` | `/api/auth/sessions` | JWT | Revoke all sessions |
+| `GET` | `/api/leads` | JWT | Paginated lead list (search, filter, sort) |
+| `POST` | `/api/leads` | JWT | Create lead (duplicate check) |
+| `GET` | `/api/leads/kanban` | JWT | Leads grouped by pipeline stage |
+| `GET` | `/api/leads/analytics` | JWT | Status counts, source breakdown, trend |
+| `GET` | `/api/leads/export` | JWT manager+ | CSV download |
+| `GET` | `/api/leads/:id` | JWT | Single lead with activities |
+| `PUT` | `/api/leads/:id` | JWT | Full lead update |
+| `PATCH` | `/api/leads/:id/status` | JWT | Stage change (ownership + role verified) |
+| `POST` | `/api/leads/:id/activities` | JWT | Log note / call / email / meeting |
+| `DELETE` | `/api/leads/:id` | JWT manager+ | Delete lead |
+| `GET` | `/api/reminders` | JWT | List reminders (pending/completed, leadId filter) |
+| `GET` | `/api/reminders/summary` | JWT | Overdue + due-today counts |
+| `POST` | `/api/reminders` | JWT | Create reminder |
+| `PATCH` | `/api/reminders/:id/complete` | JWT | Mark complete |
+| `DELETE` | `/api/reminders/:id` | JWT | Delete reminder |
+| `POST` | `/api/webhooks/leads` | HMAC | Inbound lead capture |
+| `GET` | `/api/health` | — | Health check |
 
 ---
 
-## Alternative Deployment Options
+## Security
 
-<details>
-<summary><b>Option B — Backend on Render (Traditional Server)</b></summary>
+| Measure | Detail |
+|---------|--------|
+| Password hashing | bcrypt, 12 salt rounds |
+| Access tokens | JWT, 15-minute expiry, Authorization header |
+| Refresh tokens | Opaque + signed, 7-day expiry, httpOnly cookie |
+| Token rotation | New refresh token issued on every use |
+| Reuse detection | Replay → all user sessions revoked |
+| Brute-force protection | Progressive delays: 1 s → 30 s; 20 attempts/15 min hard cap |
+| RBAC | Three roles enforced server-side on every route |
+| IDOR protection | Every lead operation re-verifies ownership (404 on foreign IDs) |
+| Stage lock | Won/Lost requires manager+; terminal stages need admin to re-open |
+| Concurrency | `__v` version check → 409 on stale updates |
+| XSS | All user text stripped of HTML/JS before storage |
+| Audit trail | Every pipeline move logged with user/timestamp |
+| Rate limits | 100 req/15 min global; 30 auth; 30 pipeline moves/min/user |
+| Security headers | Helmet (CSP, HSTS, X-Frame-Options, …) |
+| CORS | Restricted to `CLIENT_ORIGIN` in production |
 
-If you need the reminder scheduler to run continuously:
+---
 
-1. Deploy backend to [Render](https://render.com) as a Web Service
-2. Set **Root Directory** to `server`, **Build Command** to `npm install`, **Start Command** to `npm start`
-3. Add all environment variables from Step 2
-4. Update frontend's `VITE_API_BASE_URL` to your Render URL
+## CI/CD
 
-</details>
+GitHub Actions runs on every push:
 
-<details>
-<summary><b>Option C — Frontend on Netlify</b></summary>
+```
+lint → test-backend (coverage ≥75%) → test-frontend → build → deploy (main only)
+```
 
-The `netlify.toml` is pre-configured for the client build.
+All quality gates must pass before the deploy job runs. Coverage thresholds are enforced in the Jest / Vitest config — the build fails if they drop.
 
-1. Deploy backend (Vercel or Render)
-2. Import `client` folder on Netlify
-3. Add `VITE_API_BASE_URL` in Site Settings → Environment Variables
+---
 
-</details>
+## Environment Variables
+
+### Server (`server/.env`)
+
+```env
+MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/leadflow
+JWT_SECRET=<64-char random>
+JWT_REFRESH_SECRET=<different 64-char random>
+JWT_EXPIRES_IN=15m
+JWT_REFRESH_EXPIRES_IN=7d
+PORT=5000
+NODE_ENV=development
+CLIENT_ORIGIN=http://localhost:5173
+SMTP_HOST=smtp.gmail.com        # optional
+SMTP_PORT=587
+SMTP_USER=you@gmail.com
+SMTP_PASS=app-password
+SMTP_FROM=LeadFlow <no-reply@leadflow.app>
+WEBHOOK_SECRET=<32-char random> # optional
+WEBHOOK_OWNER_ID=               # MongoDB _id of webhook lead owner
+```
+
+### Client (`client/.env`)
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api
+```
 
 ---
 
 <div align="center">
 
-**Built with care by [@zainabhina05-png](https://github.com/zainabhina05-png)**
-
-*If this project helped you, a star on GitHub means a lot!*
+Built with care · MIT License
 
 </div>
