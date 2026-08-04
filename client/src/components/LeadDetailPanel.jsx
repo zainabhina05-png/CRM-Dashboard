@@ -4,7 +4,6 @@ import ActivityTimeline from './ActivityTimeline';
 import RemindersPanel from './RemindersPanel';
 import StatusBadge from './StatusBadge';
 import { SOURCE_LABELS } from '../constants';
-import useRole from '../hooks/useRole';
 
 const ActivityForm = ({ onSubmit, loading }) => {
   const [type, setType] = useState('note');
@@ -55,7 +54,6 @@ const LeadDetailPanel = ({
   onLogActivity,
   onStatusChange,
 }) => {
-  const { can } = useRole();
   if (!lead && !loading) return null;
 
   return (

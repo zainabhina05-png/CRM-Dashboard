@@ -10,7 +10,6 @@ import {
 } from '@dnd-kit/core';
 import { PIPELINE_STATUSES } from '../constants';
 import KanbanColumn from './KanbanColumn';
-import KanbanCard from './KanbanCard';
 import { listContainer, listItem } from '../styles/motion';
 
 const KanbanBoard = ({ grouped, onStatusChange, onCardClick, loading }) => {

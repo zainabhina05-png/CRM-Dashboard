@@ -29,7 +29,7 @@ const LeadsPage = () => {
   const [detailLeadId, setDetailLeadId] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [sourceFilter, setSourceFilter] = useState('All');
-  const [tagFilter, setTagFilter] = useState('');
+  const [tagFilter] = useState('');
 
   const debouncedSearch = useDebounce(search);
 
