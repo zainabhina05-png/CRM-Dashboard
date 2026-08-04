@@ -143,7 +143,6 @@ jobs:
           if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
             echo "skip=true" >> $GITHUB_OUTPUT
             echo "⚠️  VERCEL_TOKEN not set — skipping automated deploy"
-            echo "   Deploy manually: cd server && vercel --prod"
           else
             echo "skip=false" >> $GITHUB_OUTPUT
           fi
@@ -158,6 +157,7 @@ jobs:
           cd server
           vercel --prod \
             --token="${{ secrets.VERCEL_TOKEN }}" \
+            --scope="${{ secrets.VERCEL_ORG_ID }}" \
             --yes 2>&1 | tail -5
         continue-on-error: true
 
@@ -167,6 +167,7 @@ jobs:
           cd client
           vercel --prod \
             --token="${{ secrets.VERCEL_TOKEN }}" \
+            --scope="${{ secrets.VERCEL_ORG_ID }}" \
             --yes 2>&1 | tail -5
         continue-on-error: true
 
